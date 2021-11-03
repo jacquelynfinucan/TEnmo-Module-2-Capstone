@@ -33,11 +33,7 @@ namespace TenmoServer.DAO
                 if (reader.Read())
                 {
                     return GetTransferFromReader(reader);
-
                 }
-
-
-
             }
             return null;
         }
@@ -99,7 +95,71 @@ namespace TenmoServer.DAO
                 throw;
             }
             return listOfTransfers;
+
+
         }
+
+        public Transfer CreateATransfer(Transfer transfer)
+        {
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(@"INSERT INTO transfers (transfer_type_id,transfer_status_id,account_from,account_to,amount)
+                                                      OUTPUT inserted.transfer_id
+                                                      VALUES ({transfer_type_id},{transfer_status_id},{account_from},{account_to},{amount})", conn);
+
+                    cmd.Parameters.AddWithValue("transfer_type_id", transfer.TransferTypeId);
+                    cmd.Parameters.AddWithValue("transfer_status_id", transfer.TransferStatusId);
+                    cmd.Parameters.AddWithValue("account_from", transfer.AccountFrom);
+                    cmd.Parameters.AddWithValue("account_to", transfer.AccountTo);
+                    cmd.Parameters.AddWithValue("amount", transfer.Amount);
+
+                    transfer.TransferId = (int)cmd.ExecuteScalar();
+
+                    return transfer;
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+            
+        }
+
+        public Account UpdateBalance(int accountId, int moneyToAdd)
+        {
+            var balance = GetAccountById(accountId).Balance;
+            var newBalance = balance + moneyToAdd;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(@"UPDATE accounts
+                                                      SET balance = {newBalance}
+                                                      WHERE account_id = {account_id}", conn);
+
+                    cmd.Parameters.AddWithValue("newBalance",newBalance );
+                    cmd.Parameters.AddWithValue("account_id", accountId);
+          
+
+                    return GetAccountById(accountId);
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
+
 
         private Account GetAccountFromReader(SqlDataReader reader)
         {
