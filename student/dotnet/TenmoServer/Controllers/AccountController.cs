@@ -11,16 +11,19 @@ namespace TenmoServer.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountSQLDao accountDao;
+        private readonly IUserDao userDao;
 
-        public AccountController(IAccountSQLDao _accountDao)
+        public AccountController(IAccountSQLDao _accountDao, IUserDao _userDao)
         {
-            accountDao = _accountDao;
+            userDao = _userDao;
         }
 
-       [HttpGet("/balance")]
-       public static decimal GetBalance()
+       [HttpGet("/{accountId}")]
+       public decimal GetBalance(int accountId)
         {
-            return 0;
+            Account account = accountDao.GetAccountById(accountId);
+            decimal balance = account.Balance;
+            return balance;
         }
        [HttpPost("/transfers/{userid}")]
        public static void SendTEBucks()
@@ -28,10 +31,19 @@ namespace TenmoServer.Controllers
             //Transfer newTransfer = 
         }
 
-        [HttpGet("/transfers/users")]
-        public static List<User> GetAllUsers()
+        [HttpGet("/users")]
+        public List<User> GetAllUsersIdsAndNames()
         {
-            return null;
+            List<User> allUsers = userDao.GetUsers();
+            List<User> userIdsAndNames = new List<User>();
+            foreach (User user in allUsers)
+            {
+                User newUser = new User();
+                newUser.UserId = user.UserId;
+                newUser.Username = user.Username;
+                userIdsAndNames.Add(newUser);
+            }
+            return userIdsAndNames;
         }
 
         [HttpGet("/transfers")]
@@ -40,6 +52,7 @@ namespace TenmoServer.Controllers
             List<Transfer> listOfTransfers = accountDao.GetAllTransferForAccount(accountId);
             return listOfTransfers;
        }
+
         [HttpGet("/transfers/{transid}")]
         public static Transfer ShowATransfer()
         {
