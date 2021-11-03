@@ -96,7 +96,6 @@ namespace TenmoServer.DAO
             }
             return listOfTransfers;
 
-
         }
 
         public Transfer CreateATransfer(Transfer transfer)
