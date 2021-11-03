@@ -59,9 +59,9 @@ CREATE TABLE transfers (
 )
 
 
-INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Pending');
-INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Approved');
-INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Rejected');
+INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Pending');  --1
+INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Approved'); --2
+INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Rejected'); --3
 
-INSERT INTO transfer_types (transfer_type_desc) VALUES ('Request');
-INSERT INTO transfer_types (transfer_type_desc) VALUES ('Send');
+INSERT INTO transfer_types (transfer_type_desc) VALUES ('Request');  --1
+INSERT INTO transfer_types (transfer_type_desc) VALUES ('Send');     --2
