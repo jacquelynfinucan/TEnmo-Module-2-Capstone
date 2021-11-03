@@ -70,5 +70,24 @@ namespace TenmoClient
             Console.WriteLine("");
             return pass;
         }
+
+        public void PrintBalance(decimal? balance)
+        {
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Balance Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine(" Your current account balance is: $" + balance);
+            
+        }
+
+        public void PrintAccount(Account account)
+        {
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Account Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine(" Account Id: " + account.AccountId);
+            Console.WriteLine(" User Id: " + account.UserId);
+            Console.WriteLine(" Balance: " + account.Balance);
+        }
     }
 }
