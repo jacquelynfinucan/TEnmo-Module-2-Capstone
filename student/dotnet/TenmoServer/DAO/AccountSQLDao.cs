@@ -26,20 +26,20 @@ namespace TenmoServer.DAO
                 SqlCommand cmd = new SqlCommand(@"SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount
                                                   FROM transfers
                                                   WHERE transfer_id = {id}", conn);
-                cmd.Parameters.AddWithValue("id", accountId);
+                cmd.Parameters.AddWithValue("id", TransferId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    return new Transfer(reader["transfer_id", "transfer_type_id", "transfer_status_id", "account_from"])
-
+                    return GetTransferFromReader(reader);
 
                 }
 
 
 
             }
+            return null;
         }
 
 
