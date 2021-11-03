@@ -49,14 +49,15 @@ namespace TenmoServer.Controllers
         [HttpGet("/transfers")]
        public List<Transfer> ShowUserTransfers(int accountId)
        {
-            List<Transfer> listOfTransfers = accountDao.GetAllTransferForAccount(accountId);
+            List<Transfer> listOfTransfers = accountDao.GetAllTransfersForAccount(accountId);
             return listOfTransfers;
        }
 
         [HttpGet("/transfers/{transid}")]
-        public static Transfer ShowATransfer()
+        public Transfer ShowATransfer(int transferId)
         {
-            return null;
+            Transfer transfer = accountDao.GetTransferById(transferId);
+            return transfer;
         }
 
     }
