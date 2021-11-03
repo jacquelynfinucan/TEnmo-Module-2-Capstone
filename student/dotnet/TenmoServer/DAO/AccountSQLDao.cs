@@ -45,7 +45,7 @@ namespace TenmoServer.DAO
             return searchAccount;
         }
 
-        public List<Transfer> GetAllTransferForAccount(int accountId)
+        public List<Transfer> GetAllTransfersForAccount(int accountId)
         {
             List<Transfer> listOfTransfers = new List<Transfer>();
             try
