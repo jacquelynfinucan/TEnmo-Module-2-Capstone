@@ -10,15 +10,22 @@ namespace TenmoServer.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IAccountSQLDao accountDao;
+
+        public AccountController(IAccountSQLDao _accountDao)
+        {
+            accountDao = _accountDao;
+        }
+
        [HttpGet("/balance")]
        public static decimal GetBalance()
         {
             return 0;
         }
-       [HttpPut("/transfers/{userid}")]
+       [HttpPost("/transfers/{userid}")]
        public static void SendTEBucks()
         {
-
+            //Transfer newTransfer = 
         }
 
         [HttpGet("/transfers/users")]
@@ -27,11 +34,11 @@ namespace TenmoServer.Controllers
             return null;
         }
 
-
         [HttpGet("/transfers")]
-       public static List<Transfer> ShowUserTransfers()
+       public List<Transfer> ShowUserTransfers(int accountId)
        {
-           return null;
+            List<Transfer> listOfTransfers = accountDao.GetAllTransferForAccount(accountId);
+            return listOfTransfers;
        }
         [HttpGet("/transfers/{transid}")]
         public static Transfer ShowATransfer()

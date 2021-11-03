@@ -73,6 +73,17 @@ namespace TenmoServer.DAO
             return returnUsers;
         }
 
+        public Dictionary<int, string> GetAllUsersIdsAndNames() //different from above so we're not showing password & salt to client
+        {
+            List<User> allUsers = GetUsers();
+            Dictionary<int, string> dictionaryOfAllUsers = new Dictionary<int, string>();
+            foreach(User user in allUsers)
+            {
+                dictionaryOfAllUsers[user.UserId] = user.Username;
+            }
+            return dictionaryOfAllUsers;
+        }
+
         public User AddUser(string username, string password)
         {
             IPasswordHasher passwordHasher = new PasswordHasher();
