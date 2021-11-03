@@ -20,7 +20,15 @@ namespace TenmoServer.Controllers
         {
 
         }
-       [HttpGet("/transfers")]
+
+        [HttpGet("/transfers/users")]
+        public static List<User> GetAllUsers()
+        {
+            return null;
+        }
+
+
+        [HttpGet("/transfers")]
        public static List<Transfer> ShowUserTransfers()
        {
            return null;
