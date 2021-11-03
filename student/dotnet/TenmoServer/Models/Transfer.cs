@@ -18,5 +18,9 @@
             this.AccountTo = accountTo;
             this.Amount = amount;
         }
+        public Transfer()
+        {
+            //had to add this empty constructor for GetTransferFromReader to work
+        }
     }
 }
