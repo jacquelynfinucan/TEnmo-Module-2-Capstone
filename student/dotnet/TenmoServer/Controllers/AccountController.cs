@@ -6,44 +6,60 @@ using System.Collections.Generic;
 
 namespace TenmoServer.Controllers
 {
-    [Route("[controller]")]
+    [Route("[Controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly IAccountSQLDao accountDao;
+        private readonly IUserDao userDao;
 
-        public AccountController(IAccountSQLDao _accountDao)
+        public AccountController(IAccountSQLDao _accountDao, IUserDao _userDao)
         {
+            userDao = _userDao;
             accountDao = _accountDao;
         }
 
-       [HttpGet("/balance")]
-       public static decimal GetBalance()
+       [HttpGet("{accountId}")]
+       public decimal GetBalance(int accountId)
         {
-            return 0;
+            Account account = accountDao.GetAccountById(accountId);
+            decimal balance = account.Balance;
+            return balance;
         }
-       [HttpPost("/transfers/{userid}")]
+       [HttpPost("transfers/{userid}")]
        public static void SendTEBucks()
         {
             //Transfer newTransfer = 
         }
 
-        [HttpGet("/transfers/users")]
-        public static List<User> GetAllUsers()
+        [HttpGet("users")]
+        public List<User> GetAllUsersIdsAndNames()
         {
-            return null;
+            List<User> allUsers = userDao.GetUsers();
+            List<User> userIdsAndNames = new List<User>();
+            foreach (User user in allUsers)
+            {
+                User newUser = new User();
+                newUser.UserId = user.UserId;
+                newUser.Username = user.Username;
+                userIdsAndNames.Add(newUser);
+            }
+            return userIdsAndNames;
         }
 
-        [HttpGet("/transfers")]
+        [HttpGet("transfers")]
+        //use ?accountId=int query 
        public List<Transfer> ShowUserTransfers(int accountId)
        {
-            List<Transfer> listOfTransfers = accountDao.GetAllTransferForAccount(accountId);
+            List<Transfer> listOfTransfers = accountDao.GetAllTransfersForAccount(accountId);
             return listOfTransfers;
        }
-        [HttpGet("/transfers/{transid}")]
-        public static Transfer ShowATransfer()
+
+        [HttpGet("transfers/{transferId}")]
+        public Transfer ShowATransfer(int transferId)
         {
-            return null;
+            Transfer transfer = accountDao.GetTransferById(transferId);
+            return transfer;
         }
 
     }

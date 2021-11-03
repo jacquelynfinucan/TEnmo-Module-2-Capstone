@@ -59,9 +59,25 @@ CREATE TABLE transfers (
 )
 
 
-INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Pending');  --1
-INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Approved'); --2
-INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Rejected'); --3
+INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Pending');
+INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Approved');
+INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Rejected');
 
-INSERT INTO transfer_types (transfer_type_desc) VALUES ('Request');  --1
-INSERT INTO transfer_types (transfer_type_desc) VALUES ('Send');     --2
+INSERT INTO transfer_types (transfer_type_desc) VALUES ('Request');
+INSERT INTO transfer_types (transfer_type_desc) VALUES ('Send');
+
+
+GET * FROM users
+
+SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount
+FROM transfers
+WHERE account_from = {id} OR  account_to = {id}
+
+INSERT INTO transfers (transfer_type_id,transfer_status_id,account_from,account_to,amount)
+OUTPUT inserted.transfer_id
+VALUES ({transfer_type_id},{transfer_status_id},{account_from},{account_to},{amount})
+
+INSERT INTO transfers (transfer_type_id, transfer_status_id,account_from,account_to,amount)
+VALUES (0,0,2001,2002,1),(1,1,2002,2001,2)
+
+SELECT * FROM accounts
