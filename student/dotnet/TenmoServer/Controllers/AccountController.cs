@@ -84,6 +84,13 @@ namespace TenmoServer.Controllers
             return transfer;
         }
 
-        
+        [HttpGet("users/{accountId}")]
+        public string GetUserNameFromAccountId(int accountId)
+        {
+            string userName = accountDao.GetUserNameFromAccountId(accountId);
+            return userName;
+        }
+
+
     }
 }
