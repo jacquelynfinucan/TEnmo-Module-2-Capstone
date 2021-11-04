@@ -7,7 +7,7 @@ namespace TenmoServer.Models
     public class Transfer
     {
 
-        [Range(3001, double.PositiveInfinity, ErrorMessage = "Transfer id must be OVER 3000")]
+        [Range(3001, double.PositiveInfinity, ErrorMessage = "Transfer id must be OVER 3000.")]
         public int TransferId { get; set; }
         
         [Required(ErrorMessage = "Transfer Type Required.")]
