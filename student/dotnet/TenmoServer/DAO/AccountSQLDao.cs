@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace TenmoServer.DAO
 {
-    public class AccountSQLDao //: IAccountSQLDao
+    public class AccountSQLDao : IAccountSQLDao
     {
         private readonly string connectionString;
         const decimal startingBalance = 1000;

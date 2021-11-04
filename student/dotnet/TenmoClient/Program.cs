@@ -100,7 +100,8 @@ namespace TenmoClient
                 {
                     List<Transfer> pastTransfers = apiService.GetPastTransfers();
                     console.PrintTransfers(pastTransfers);
-                    // Prompt console method to enter transferId to get details of any specific transfer.
+                    int transferId = console.PromptForTransferId();
+                    console.PrintTransferById(apiService.GetTransferDetailsById(transferId));
                 }
                 else if (menuSelection == 3)
                 {
