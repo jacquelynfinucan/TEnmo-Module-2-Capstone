@@ -89,5 +89,30 @@ namespace TenmoClient
             Console.WriteLine(" User Id: " + account.UserId);
             Console.WriteLine(" Balance: " + account.Balance);
         }
+        public void PrintUsers(List<User> users)
+        {
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Users");
+            Console.WriteLine("ID          Name");
+            Console.WriteLine("--------------------------------------------");
+            foreach(User user in users)
+            {
+                Console.WriteLine($"{user.UserId}          {user.Username}");
+            }
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine();
+        }
+
+        public int PromptForUserId()
+        {
+            Console.WriteLine("Enter ID of user you are sending to (0 to cancel): "); //need to trap 0 value
+            return int.Parse(Console.ReadLine());  //need tryparse here
+        }
+
+        public decimal PromptForAmount()
+        {
+            Console.WriteLine("Enter amount: ");
+            return decimal.Parse(Console.ReadLine());  //need tryparse here
+        }
     }
 }

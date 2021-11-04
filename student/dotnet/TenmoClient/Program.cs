@@ -95,7 +95,7 @@ namespace TenmoClient
                 {
                     //decimal account = user.GetAccount()    
                     decimal? balance = apiService.GetBalance();
-                    Console.WriteLine(balance);
+                    console.PrintBalance(balance);
                 }
                 else if (menuSelection == 2)
                 {
@@ -106,8 +106,22 @@ namespace TenmoClient
 
                 }
                 else if (menuSelection == 4)
-                {
-
+                {                  
+                    try
+                    {
+                        List<User> users = apiService.GetAllUsers();
+                        if (users != null && users.Count > 0)
+                        {
+                            console.PrintUsers(users);
+                            int userId = console.PromptForUserId();
+                            decimal xferAmount = console.PromptForAmount();
+                            apiService.TransferMoney(userId, xferAmount);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
                 else if (menuSelection == 5)
                 {

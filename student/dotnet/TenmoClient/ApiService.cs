@@ -36,7 +36,23 @@ namespace TenmoClient
                 return response.Data;
             }
             return null;
+        }
 
+        public List<User> GetAllUsers()
+        {
+            List<User> users = new List<User>();
+            RestRequest request = new RestRequest(API_URL + "users");
+            IRestResponse<List<User>> response = client.Get<List<User>>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+            return null;
         }
 
         public decimal? GetBalance()
@@ -56,10 +72,22 @@ namespace TenmoClient
             return null;
         }
 
+        public void TransferMoney(int userId, decimal xferAmount)
+        {
+            Transfer newTransfer = new Transfer(UserService.GetUserId(),userId,xferAmount);
+            RestRequest request = new RestRequest(API_URL + "account/transfer");
+            request.AddJsonBody(newTransfer);
+            IRestResponse<Transfer> response = client.Post<Transfer>(request);
 
-
-
-
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            //else
+            //{
+            //    return response.Data;
+            //}
+        }
 
         private void ProcessErrorResponse(IRestResponse response)
         {

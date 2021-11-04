@@ -17,10 +17,10 @@ namespace TenmoServer.Controllers
             accountDao = _accountDao;
         }
 
-       [HttpGet("/balance")]
+       [HttpGet("balance")]
        public static decimal GetBalance()
         {
-            return 0;
+            return 0.0M;
         }
        [HttpPost("/transfers/{userid}")]
        public static void SendTEBucks()
