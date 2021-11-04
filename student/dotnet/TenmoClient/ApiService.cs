@@ -57,9 +57,8 @@ namespace TenmoClient
 
         public List<Transfer> GetPastTransfers()
         {
-            int accountId = 2001; //Placeholder until Server side changes to require userId instead.   Then call UserService.GetUserId()
             List<Transfer> transfers = new List<Transfer>();
-            RestRequest request = new RestRequest(API_URL + "account/transfers?accountId=" + accountId);
+            RestRequest request = new RestRequest(API_URL + "account/transfers/?userId=" + UserService.GetUserId());
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
@@ -75,8 +74,7 @@ namespace TenmoClient
 
         public decimal? GetBalance()
         {
-            int accountId = 2001; //Placeholder until Server side is changed to require userId instead. Then call UserService.GetUserId()  
-            RestRequest request = new RestRequest(API_URL + "account/" + accountId); 
+            RestRequest request = new RestRequest(API_URL + "account/" + UserService.GetUserId()); 
             IRestResponse<decimal> response = client.Get<decimal>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
@@ -92,21 +90,38 @@ namespace TenmoClient
 
         public void TransferMoney(int userId, decimal xferAmount)
         {
-            Transfer newTransfer = new Transfer(UserService.GetUserId(), userId, xferAmount);
-            //Transfer newTransfer = new Transfer(transferId, transferTypeId, transferStatusId, accountFrom, userId, xferAmount);
-            RestRequest request = new RestRequest(API_URL + "account/transfer/" + userId);
-            request.AddJsonBody(newTransfer);
-            IRestResponse<Transfer> response = client.Post<Transfer>(request);
+            RestRequest request = new RestRequest(API_URL + "account/transfers/" + UserService.GetUserId() + "?receivingUserId=" + userId + "&amount=" + xferAmount);
+            IRestResponse response = client.Post(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
                 ProcessErrorResponse(response);
             }
-            //else
-            //{
-            //    return response.Data;
-            //}
+            else
+            {
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("Transfer Successful!");
+                Console.WriteLine("--------------------------------------------");
+            }
         }
+
+        public Transfer GetTransferDetailsById(int transferId)
+        {
+            Transfer transfer = new Transfer();
+            RestRequest request = new RestRequest(API_URL + "account/transfers/" + transferId);
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+            return null;
+        }
+
 
         private void ProcessErrorResponse(IRestResponse response)
         {
@@ -131,5 +146,6 @@ namespace TenmoClient
                 }
             }
         }
+
     }
 }

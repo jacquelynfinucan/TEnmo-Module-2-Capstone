@@ -106,17 +106,29 @@ namespace TenmoClient
         {
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Transfers");
-            Console.WriteLine("ID          From/To         Amount");
+            Console.WriteLine("ID             From/To           Amount");
             Console.WriteLine("--------------------------------------------");
             foreach (Transfer transfer in transfers)
             {
-                Console.WriteLine($"{transfer.TransferId}          {transfer.AccountFrom}            {transfer.Amount}");
+                Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFrom}            ${transfer.Amount}");
             }
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine();
-
         }
 
+        public void PrintTransferById(Transfer transfer)
+        {
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Transfer Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine(" Transfer Id: " + transfer.TransferId);
+            Console.WriteLine(" From: " + transfer.AccountFrom);
+            Console.WriteLine(" To: " + transfer.AccountTo);
+            Console.WriteLine(" Transfer Type: " + transfer.TransferTypeId);
+            Console.WriteLine(" Transfer Status: " + transfer.TransferStatusId);
+            Console.WriteLine(" Amount: " + transfer.Amount);
+            Console.WriteLine("--------------------------------------------");
+        }
         public int PromptForUserId()
         {
             Console.WriteLine("Enter ID of user you are sending to (0 to cancel): "); //need to trap 0 value here
@@ -127,6 +139,12 @@ namespace TenmoClient
         {
             Console.WriteLine("Enter amount: ");
             return decimal.Parse(Console.ReadLine());  //need tryparse here
+        }
+
+        public int PromptForTransferId()
+        {
+            Console.WriteLine("Enter ID of transfer you'd like more details of (0 to cancel): "); //need to trap 0 value here
+            return int.Parse(Console.ReadLine());  //need tryparse here
         }
     }
 }
