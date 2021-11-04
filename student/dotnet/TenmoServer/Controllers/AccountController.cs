@@ -26,10 +26,26 @@ namespace TenmoServer.Controllers
             decimal balance = account.Balance;
             return balance;
         }
-       [HttpPost("transfers/{userid}")]
-       public static void SendTEBucks()
+       [HttpPost("transfers/{userId}")]
+       public bool SendTEBucks(int userId, Transfer transfer)
         {
-            Transfer newTransfer = 
+            bool isTransferSuccessful = false;
+            Transfer newTransfer = accountDao.CreateATransfer(transfer);
+            Account debitAccount = accountDao.GetAccountById(newTransfer.AccountFrom);
+            Account creditAccount = accountDao.GetAccountById(newTransfer.AccountTo);
+
+            if(debitAccount.Balance < newTransfer.Amount) //if not enough funds to debit for transfer
+            {
+                newTransfer.TransferStatusId = 3; //sets status to Rejected & transfer is not successful
+            }
+            else
+            {
+                accountDao.UpdateBalance(newTransfer.AccountFrom, -newTransfer.Amount); //amt is negative since it's being subtracted
+                accountDao.UpdateBalance(newTransfer.AccountTo, newTransfer.Amount); //amt is positive since it's being added
+                accountDao.UpdateATransferStatus(newTransfer.TransferId, 2); //sets status to Approved
+                isTransferSuccessful = true;
+            }
+            return isTransferSuccessful;
         }
 
         [HttpGet("users")]
