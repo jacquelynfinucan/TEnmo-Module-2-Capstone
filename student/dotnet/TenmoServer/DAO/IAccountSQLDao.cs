@@ -10,7 +10,7 @@ namespace TenmoServer.DAO
     {
         Account GetAccountById(int accountId);
 
-        List<Transfer> GetAllTransferForAccount(int accountId);
+        List<Transfer> GetAllTransfersForAccount(int accountId);
 
         Transfer GetTransferById(int transferId);
 
