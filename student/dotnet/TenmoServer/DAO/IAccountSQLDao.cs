@@ -20,5 +20,6 @@ namespace TenmoServer.DAO
 
         Account UpdateBalance(int accountId, decimal amount);
 
+        int GetAccountIdFromUserId(int userId);
     }
 }

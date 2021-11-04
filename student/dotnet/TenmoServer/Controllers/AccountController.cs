@@ -19,16 +19,21 @@ namespace TenmoServer.Controllers
             accountDao = _accountDao;
         }
 
-       [HttpGet("{accountId}")]
-       public decimal GetBalance(int accountId)
+       [HttpGet("{userId}")]
+       public decimal GetBalance(int userId)
         {
+            int accountId = accountDao.GetAccountIdFromUserId(userId);
             Account account = accountDao.GetAccountById(accountId);
             decimal balance = account.Balance;
             return balance;
         }
-       [HttpPost("transfers/{accountFrom}")]
-       public bool SendTEBucks(int accountFrom, int accountTo, decimal amount)
+
+       [HttpPost("transfers/{sendingUserId}")]
+       public bool SendTEBucks(int sendingUserId, int receivingUserId, decimal amount)
         {
+            //no json body, use query to input userId's & amount
+            int accountFrom = accountDao.GetAccountIdFromUserId(sendingUserId);
+            int accountTo = accountDao.GetAccountIdFromUserId(receivingUserId);
             bool isTransferSuccessful = false;
             Transfer transfer = new Transfer(2, 2, accountFrom, accountTo, amount);
             Transfer newTransfer = accountDao.CreateATransfer(transfer);
@@ -65,8 +70,9 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transfers")]
         //use ?accountId=int query 
-       public List<Transfer> ShowUserTransfers(int accountId)
+       public List<Transfer> ShowUserTransfers(int userId)
        {
+            int accountId = accountDao.GetAccountIdFromUserId(userId);
             List<Transfer> listOfTransfers = accountDao.GetAllTransfersForAccount(accountId);
             return listOfTransfers;
        }
@@ -78,5 +84,6 @@ namespace TenmoServer.Controllers
             return transfer;
         }
 
+        
     }
 }

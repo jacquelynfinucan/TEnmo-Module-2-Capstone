@@ -195,5 +195,31 @@ namespace TenmoServer.DAO
             transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
             return transfer;
         }
+
+        public int GetAccountIdFromUserId(int userId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(@"Select account_id from accounts
+                                                      JOIN users on users.user_id = accounts.user_id
+                                                      WHERE users.user_id = @userId", conn);
+
+                    cmd.Parameters.AddWithValue("@userId", userId);
+
+                    int accountId = (int)cmd.ExecuteScalar();
+                    return accountId;
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+        }
+
+
     }
 }
