@@ -76,8 +76,7 @@ namespace TenmoClient
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Balance Details");
             Console.WriteLine("--------------------------------------------");
-            Console.WriteLine(" Your current account balance is: $" + balance);
-            
+            Console.WriteLine(" Your current account balance is: $" + balance);          
         }
 
         public void PrintAccount(Account account)
@@ -88,6 +87,46 @@ namespace TenmoClient
             Console.WriteLine(" Account Id: " + account.AccountId);
             Console.WriteLine(" User Id: " + account.UserId);
             Console.WriteLine(" Balance: " + account.Balance);
+        }
+        public void PrintUsers(List<User> users)
+        {
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Users");
+            Console.WriteLine("ID          Name");
+            Console.WriteLine("--------------------------------------------");
+            foreach(User user in users)
+            {
+                Console.WriteLine($"{user.UserId}          {user.Username}");
+            }
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine();
+        }
+
+        public void PrintTransfers(List<Transfer> transfers)
+        {
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Transfers");
+            Console.WriteLine("ID          From/To         Amount");
+            Console.WriteLine("--------------------------------------------");
+            foreach (Transfer transfer in transfers)
+            {
+                Console.WriteLine($"{transfer.TransferId}          {transfer.AccountFrom}            {transfer.Amount}");
+            }
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine();
+
+        }
+
+        public int PromptForUserId()
+        {
+            Console.WriteLine("Enter ID of user you are sending to (0 to cancel): "); //need to trap 0 value here
+            return int.Parse(Console.ReadLine());  //need tryparse here
+        }
+
+        public decimal PromptForAmount()
+        {
+            Console.WriteLine("Enter amount: ");
+            return decimal.Parse(Console.ReadLine());  //need tryparse here
         }
     }
 }

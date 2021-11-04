@@ -93,25 +93,40 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    //decimal account = user.GetAccount()    
                     decimal? balance = apiService.GetBalance();
-                    Console.WriteLine(balance);
+                    console.PrintBalance(balance);
                 }
                 else if (menuSelection == 2)
                 {
-                    
+                    List<Transfer> pastTransfers = apiService.GetPastTransfers();
+                    console.PrintTransfers(pastTransfers);
+                    // Prompt console method to enter transferId to get details of any specific transfer.
                 }
                 else if (menuSelection == 3)
                 {
-
+                    // View my pending transfer requests.
                 }
                 else if (menuSelection == 4)
-                {
-
+                {                  
+                    try
+                    {
+                        List<User> users = apiService.GetAllUsers();
+                        if (users != null && users.Count > 0)
+                        {
+                            console.PrintUsers(users);
+                            int userId = console.PromptForUserId();
+                            decimal xferAmount = console.PromptForAmount();
+                            apiService.TransferMoney(userId, xferAmount);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
                 else if (menuSelection == 5)
                 {
-
+                    // Request TE Bucks from another user.
                 }
                 else if (menuSelection == 6)
                 {
