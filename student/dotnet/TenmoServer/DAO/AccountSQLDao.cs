@@ -83,7 +83,7 @@ namespace TenmoServer.DAO
                     cmd.Parameters.AddWithValue("@accountId", accountId);
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    if (reader.Read())
+                    while (reader.Read())
                     {
                         Transfer transfer = GetTransferFromReader(reader);
                         listOfTransfers.Add(transfer);
@@ -107,13 +107,13 @@ namespace TenmoServer.DAO
 
                     SqlCommand cmd = new SqlCommand(@"INSERT INTO transfers (transfer_type_id,transfer_status_id,account_from,account_to,amount)
                                                       OUTPUT inserted.transfer_id
-                                                      VALUES ({transfer_type_id},{transfer_status_id},{account_from},{account_to},{amount})", conn);
+                                                      VALUES (@transfer_type_id,@transfer_status_id,@account_from,@account_to,@amount)", conn);
 
-                    cmd.Parameters.AddWithValue("transfer_type_id", transfer.TransferTypeId);
-                    cmd.Parameters.AddWithValue("transfer_status_id", transfer.TransferStatusId);
-                    cmd.Parameters.AddWithValue("account_from", transfer.AccountFrom);
-                    cmd.Parameters.AddWithValue("account_to", transfer.AccountTo);
-                    cmd.Parameters.AddWithValue("amount", transfer.Amount);
+                    cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
+                    cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
+                    cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+                    cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
+                    cmd.Parameters.AddWithValue("@amount", transfer.Amount);
 
                     transfer.TransferId = (int)cmd.ExecuteScalar();
 
@@ -160,12 +160,14 @@ namespace TenmoServer.DAO
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand(@"UPDATE accounts
-                                                      //SET balance = @newBalance
+                                                      SET balance = @newBalance
                                                       WHERE account_id = @account_id", conn);
 
                     cmd.Parameters.AddWithValue("@newBalance", newBalance);
                     cmd.Parameters.AddWithValue("@account_id", accountId);
-          
+
+                    cmd.ExecuteNonQuery();
+
                     return GetAccountById(accountId);
                 }
             }
