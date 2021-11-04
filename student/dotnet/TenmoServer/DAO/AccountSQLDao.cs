@@ -188,15 +188,9 @@ namespace TenmoServer.DAO
 
         private Transfer GetTransferFromReader(SqlDataReader reader)
         {
-            Transfer transfer = new Transfer()
-            {
-                TransferId = Convert.ToInt32(reader["transfer_id"]),
-                TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
-                TransferStatusId = Convert.ToInt32(reader["transfer_status_id"]),
-                AccountFrom = Convert.ToInt32(reader["account_from"]),
-                AccountTo = Convert.ToInt32(reader["account_to"]),
-                Amount = Convert.ToDecimal(reader["amount"])
-            };
+            Transfer transfer = new Transfer((int)reader["transfer_type_id"], (int)reader["transfer_status_id"], 
+                (int)reader["account_from"], (int)reader["account_to"], (decimal)reader["amount"]);
+            transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
             return transfer;
         }
     }
