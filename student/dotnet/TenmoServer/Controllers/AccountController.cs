@@ -29,7 +29,9 @@ namespace TenmoServer.Controllers
        [HttpPost("transfers/{userid}")]
        public static void SendTEBucks()
         {
-            //Transfer newTransfer = 
+
+
+
         }
 
         [HttpGet("users")]
