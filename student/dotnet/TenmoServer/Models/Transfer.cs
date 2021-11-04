@@ -26,6 +26,7 @@ namespace TenmoServer.Models
         [Range(.01, double.PositiveInfinity,ErrorMessage ="Transfer amount cannot be 0 or negative.")]
         public decimal Amount { get; set; }
 
+        public bool Sender { get; set; }
         public Transfer(int transferTypeId, int transferStatusId, int accountFrom, int accountTo, decimal amount)
         {
             this.TransferTypeId = transferTypeId;

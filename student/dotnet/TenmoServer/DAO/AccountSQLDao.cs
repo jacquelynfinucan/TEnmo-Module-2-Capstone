@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using TenmoServer.Models;
 using System.Data.SqlClient;
 
+
 namespace TenmoServer.DAO
 {
-    public class AccountSQLDao //: IAccountSQLDao
+    public class AccountSQLDao : IAccountSQLDao
     {
         private readonly string connectionString;
         const decimal startingBalance = 1000;
@@ -75,10 +76,13 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id,
-                                                        account_from, account_to, amount
-                                                        FROM transfers
-                                                        where account_from = @accountId OR account_to = @accountId", conn);
+                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender
+                                                      FROM transfers
+                                                      WHERE account_from = {accountId}
+                                                      UNION
+                                                      SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender
+                                                      FROM transfers
+                                                      WHERE account_to = {accountId}", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
                     SqlDataReader reader = cmd.ExecuteReader();
