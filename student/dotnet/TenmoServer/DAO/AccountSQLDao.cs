@@ -17,7 +17,7 @@ namespace TenmoServer.DAO
             connectionString = dbConnectionString;
         }
 
-        public Transfer GetTransferById(int TransferId)
+        public Transfer GetTransferById(int transferId)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -26,7 +26,7 @@ namespace TenmoServer.DAO
                 SqlCommand cmd = new SqlCommand(@"SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount
                                                   FROM transfers
                                                   WHERE transfer_id = {id}", conn);
-                cmd.Parameters.AddWithValue("id", TransferId);
+                cmd.Parameters.AddWithValue("id", transferId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
