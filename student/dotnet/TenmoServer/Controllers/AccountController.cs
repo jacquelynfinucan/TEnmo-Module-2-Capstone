@@ -19,17 +19,38 @@ namespace TenmoServer.Controllers
             accountDao = _accountDao;
         }
 
-       [HttpGet("{accountId}")]
-       public decimal GetBalance(int accountId)
+       [HttpGet("{userId}")]
+       public decimal GetBalance(int userId)
         {
+            int accountId = accountDao.GetAccountIdFromUserId(userId);
             Account account = accountDao.GetAccountById(accountId);
             decimal balance = account.Balance;
             return balance;
         }
-       [HttpPost("transfers/{userid}")]
-       public static void SendTEBucks()
+
+       [HttpPost("transfers/{sendingUserId}")]
+       public bool SendTEBucks(int sendingUserId, int receivingUserId, decimal amount)
         {
-            //Transfer newTransfer = 
+            //no json body, use query to input userId's & amount
+            int accountFrom = accountDao.GetAccountIdFromUserId(sendingUserId);
+            int accountTo = accountDao.GetAccountIdFromUserId(receivingUserId);
+            bool isTransferSuccessful = false;
+            Transfer transfer = new Transfer(2, 2, accountFrom, accountTo, amount);
+            Transfer newTransfer = accountDao.CreateATransfer(transfer);
+
+            try
+            {
+                accountDao.UpdateBalance(newTransfer.AccountFrom, -newTransfer.Amount); //amt is negative since it's being subtracted
+                accountDao.UpdateBalance(newTransfer.AccountTo, newTransfer.Amount); //amt is positive since it's being added
+                accountDao.UpdateATransferStatus(newTransfer.TransferId, 2); //sets status to Approved
+                isTransferSuccessful = true;
+            }  
+            catch
+            {
+                accountDao.UpdateATransferStatus(newTransfer.TransferId, 3); //sets status to Rejected & transfer is not successful
+            }
+            
+            return isTransferSuccessful;
         }
 
         [HttpGet("users")]
@@ -49,8 +70,9 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transfers")]
         //use ?accountId=int query 
-       public List<Transfer> ShowUserTransfers(int accountId)
+       public List<Transfer> ShowUserTransfers(int userId)
        {
+            int accountId = accountDao.GetAccountIdFromUserId(userId);
             List<Transfer> listOfTransfers = accountDao.GetAllTransfersForAccount(accountId);
             return listOfTransfers;
        }
@@ -62,5 +84,6 @@ namespace TenmoServer.Controllers
             return transfer;
         }
 
+        
     }
 }

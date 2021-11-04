@@ -16,7 +16,10 @@ namespace TenmoServer.DAO
 
         Transfer CreateATransfer(Transfer transfer);
 
-        Account UpdateBalance(int accountId, int amount);
+        bool UpdateATransferStatus(int transferId, int transferStatusId);
 
+        Account UpdateBalance(int accountId, decimal amount);
+
+        int GetAccountIdFromUserId(int userId);
     }
 }
