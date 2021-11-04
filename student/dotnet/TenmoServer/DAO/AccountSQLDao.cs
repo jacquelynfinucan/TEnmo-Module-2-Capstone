@@ -25,8 +25,8 @@ namespace TenmoServer.DAO
 
                 SqlCommand cmd = new SqlCommand(@"SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount
                                                   FROM transfers
-                                                  WHERE transfer_id = {id}", conn);
-                cmd.Parameters.AddWithValue("id", transferId);
+                                                  WHERE transfer_id = @id", conn);
+                cmd.Parameters.AddWithValue("@id", TransferId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -78,6 +78,7 @@ namespace TenmoServer.DAO
 
                     SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id,
                                                         account_from, account_to, amount
+                                                        FROM transfers
                                                         where account_from = @accountId OR account_to = @accountId", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
@@ -140,11 +141,11 @@ namespace TenmoServer.DAO
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand(@"UPDATE accounts
-                                                      SET balance = {newBalance}
-                                                      WHERE account_id = {account_id}", conn);
+                                                      //SET balance = @newBalance
+                                                      WHERE account_id = @account_id", conn);
 
-                    cmd.Parameters.AddWithValue("newBalance",newBalance );
-                    cmd.Parameters.AddWithValue("account_id", accountId);
+                    cmd.Parameters.AddWithValue("@newBalance",newBalance );
+                    cmd.Parameters.AddWithValue("@account_id", accountId);
           
 
                     return GetAccountById(accountId);
