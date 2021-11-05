@@ -94,9 +94,10 @@ namespace TenmoClient
         {
             Transfer newTransfer = new Transfer(UserService.GetUserId(), userId, xferAmount);
             //Transfer newTransfer = new Transfer(transferId, transferTypeId, transferStatusId, accountFrom, userId, xferAmount);
-            RestRequest request = new RestRequest(API_URL + "account/transfer/" + userId);
+            RestRequest request = new RestRequest(API_URL + "account/transfers/" + UserService.GetUserId() + "?receivingUserId=" + userId + "&amount=" + xferAmount);
+
             request.AddJsonBody(newTransfer);
-            IRestResponse<Transfer> response = client.Post<Transfer>(request);
+            IRestResponse response = client.Post(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
