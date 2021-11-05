@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TenmoServer.Models;
 using System.Data.SqlClient;
 
+
 namespace TenmoServer.DAO
 {
     public class AccountSQLDao : IAccountSQLDao
@@ -75,10 +76,19 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id,
-                                                        account_from, account_to, amount
-                                                        FROM transfers
-                                                        where account_from = @accountId OR account_to = @accountId", conn);
+                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender,username as name
+                                                      FROM transfers 
+                                                      LEFT JOIN accounts on account_from = account_id
+                                                      LEFT JOIN users on users.user_id = accounts.user_id
+                                                      WHERE account_from = @accountId
+                                                      
+                                                      UNION
+                                                      
+                                                      SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender,username as name
+                                                      FROM transfers
+                                                      LEFT JOIN accounts on account_to = account_id
+                                                      LEFT JOIN users on users.user_id = accounts.user_id
+                                                      WHERE account_to = @accountId", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -86,6 +96,7 @@ namespace TenmoServer.DAO
                     while (reader.Read())
                     {
                         Transfer transfer = GetTransferFromReader(reader);
+                        
                         listOfTransfers.Add(transfer);
                     }
                 }
@@ -193,6 +204,8 @@ namespace TenmoServer.DAO
             Transfer transfer = new Transfer((int)reader["transfer_type_id"], (int)reader["transfer_status_id"], 
                 (int)reader["account_from"], (int)reader["account_to"], (decimal)reader["amount"]);
             transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
+            transfer.Sender = (int)reader["Sender"];
+            transfer.username = (string)reader["name"];
             return transfer;
         }
 
