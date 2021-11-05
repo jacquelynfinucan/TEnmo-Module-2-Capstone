@@ -110,7 +110,14 @@ namespace TenmoClient
             Console.WriteLine("--------------------------------------------");
             foreach (Transfer transfer in transfers)
             {
-                Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFrom}            ${transfer.Amount}");
+                if(transfer.Sender == 0)
+                {
+                    Console.WriteLine($"{transfer.TransferId}          From: {transfer.fromUser}            ${transfer.Amount}");
+                }
+                else if(transfer.Sender == 1)
+                {
+                    Console.WriteLine($"{transfer.TransferId}          To: {transfer.toUser}            ${transfer.Amount}");
+                }
             }
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine();
@@ -118,33 +125,64 @@ namespace TenmoClient
 
         public void PrintTransferById(Transfer transfer)
         {
+            string userFrom = transfer.fromUser;
+            string userTo = transfer.toUser;
+
+            string typeWord = "Send";
+
+            string statusWord = "Approved";
+
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Transfer Details");
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine(" Transfer Id: " + transfer.TransferId);
-            Console.WriteLine(" From: " + transfer.AccountFrom);
-            Console.WriteLine(" To: " + transfer.AccountTo);
-            Console.WriteLine(" Transfer Type: " + transfer.TransferTypeId);
-            Console.WriteLine(" Transfer Status: " + transfer.TransferStatusId);
+            Console.WriteLine(" From: " + userFrom);
+            Console.WriteLine(" To: " + userTo);
+            Console.WriteLine(" Transfer Type: " + typeWord);
+            Console.WriteLine(" Transfer Status: " + statusWord);
             Console.WriteLine(" Amount: " + transfer.Amount);
             Console.WriteLine("--------------------------------------------");
         }
         public int PromptForUserId()
         {
-            Console.WriteLine("Enter ID of user you are sending to (0 to cancel): "); //need to trap 0 value here
-            return int.Parse(Console.ReadLine());  //need tryparse here
+            int menuSelection;
+            Console.WriteLine("Enter ID of user you are sending to (0 to cancel): ");
+
+            if (!int.TryParse(Console.ReadLine(), out menuSelection))
+            {
+                Console.WriteLine("Invalid input. Please enter only a number.");
+            }
+            return menuSelection;
         }
 
         public decimal PromptForAmount()
         {
+            decimal menuSelection;
+            start:
             Console.WriteLine("Enter amount: ");
-            return decimal.Parse(Console.ReadLine());  //need tryparse here
+            if (!decimal.TryParse(Console.ReadLine(), out menuSelection))
+            {
+                Console.WriteLine("Invalid input. Please enter only a number.");
+                goto start;
+            }
+            if (menuSelection <= 0.00M)
+            {
+                Console.WriteLine("Invalid input. Please enter a number greater than 0.");
+                Console.WriteLine("Enter amount: ");
+                goto start;
+            }
+            return menuSelection;
         }
 
         public int PromptForTransferId()
         {
+            int menuSelection;
             Console.WriteLine("Enter ID of transfer you'd like more details of (0 to cancel): "); //need to trap 0 value here
-            return int.Parse(Console.ReadLine());  //need tryparse here
+            if (!int.TryParse(Console.ReadLine(), out menuSelection))
+            {
+                Console.WriteLine("Invalid input. Please enter only a number.");
+            }
+            return menuSelection;
         }
     }
 }
