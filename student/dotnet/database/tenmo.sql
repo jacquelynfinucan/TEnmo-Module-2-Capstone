@@ -78,6 +78,65 @@ OUTPUT inserted.transfer_id
 VALUES ({transfer_type_id},{transfer_status_id},{account_from},{account_to},{amount})
 
 INSERT INTO transfers (transfer_type_id, transfer_status_id,account_from,account_to,amount)
-VALUES (0,0,2001,2002,1),(1,1,2002,2001,2)
+VALUES (1,1,2001,2002,1),(2,2,2002,2001,2)
 
 SELECT * FROM accounts
+SELECT * FROM transfers
+
+SELECT * FROM transfer_statuses
+
+SELECT * FROM accounts
+
+
+SELECT account_id, user_id, balance, 2 as a
+from accounts 
+where account_id = 2001
+
+SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender,username as name
+FROM transfers 
+LEFT JOIN accounts on account_from = account_id
+LEFT JOIN users on users.user_id = accounts.user_id
+WHERE account_from = {accountId}
+
+UNION
+
+SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender,username as name
+FROM transfers
+LEFT JOIN accounts on account_to = account_id
+LEFT JOIN users on users.user_id = accounts.user_id
+WHERE account_to = {accountId}
+
+
+SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount,1 as Sender,usersfrom.username as name_from,usersto.username as name_to
+FROM transfers
+LEFT JOIN accounts as fromaccount on account_from = fromaccount.account_id
+LEFT JOIN accounts as toaccount on account_to = toaccount.account_id
+
+LEFT JOIN users as usersfrom on usersfrom.user_id = fromaccount.user_id
+LEFT JOIN users as usersto on usersto.user_id = toaccount.user_id
+
+WHERE transfer_id = 3003
+
+
+SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender,usersfrom.username as name_from,usersto.username as name_to
+FROM transfers 
+
+LEFT JOIN accounts as fromaccount on account_from = account_id
+LEFT JOIN accounts as toaccount on toaccount.account_id = account_to
+
+LEFT JOIN users as usersfrom on usersfrom.user_id = fromaccount.user_id
+LEFT JOIN users as usersto on usersto.user_id = toaccount.user_id
+
+WHERE account_from = 2001
+
+UNION
+
+SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender,usersfrom.username as name_from,usersto.username as name_to
+FROM transfers 
+
+LEFT JOIN accounts as fromaccount on account_from = account_id
+LEFT JOIN accounts as toaccount on toaccount.account_id = account_to
+
+LEFT JOIN users as usersfrom on usersfrom.user_id = fromaccount.user_id
+LEFT JOIN users as usersto on usersto.user_id = toaccount.user_id
+WHERE account_to = 2001

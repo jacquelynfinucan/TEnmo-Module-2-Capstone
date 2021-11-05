@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TenmoServer.Models;
 using System.Data.SqlClient;
 
+
 namespace TenmoServer.DAO
 {
     public class AccountSQLDao : IAccountSQLDao
@@ -23,8 +24,14 @@ namespace TenmoServer.DAO
             {
                 conn.Open();
 
-                SqlCommand cmd = new SqlCommand(@"SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount
+                SqlCommand cmd = new SqlCommand(@"SELECT transfer_id,transfer_type_id,transfer_status_id,account_from,account_to,amount,1 as Sender,usersfrom.username as name_from,usersto.username as name_to
                                                   FROM transfers
+                                                  LEFT JOIN accounts as fromaccount on account_from = fromaccount.account_id
+                                                  LEFT JOIN accounts as toaccount on account_to = toaccount.account_id
+                                                  
+                                                  LEFT JOIN users as usersfrom on usersfrom.user_id = fromaccount.user_id
+                                                  LEFT JOIN users as usersto on usersto.user_id = toaccount.user_id
+                                                  
                                                   WHERE transfer_id = @id", conn);
                 cmd.Parameters.AddWithValue("@id", transferId);
 
@@ -75,10 +82,28 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id,
-                                                        account_from, account_to, amount
-                                                        FROM transfers
-                                                        where account_from = @accountId OR account_to = @accountId", conn);
+                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender,usersfrom.username as name_from,usersto.username as name_to
+                                                      FROM transfers 
+                                                      
+                                                      LEFT JOIN accounts as fromaccount on account_from = account_id
+                                                      LEFT JOIN accounts as toaccount on toaccount.account_id = account_to
+                                                      
+                                                      LEFT JOIN users as usersfrom on usersfrom.user_id = fromaccount.user_id
+                                                      LEFT JOIN users as usersto on usersto.user_id = toaccount.user_id
+                                                      
+                                                      WHERE account_from = 2001
+                                                      
+                                                      UNION
+                                                      
+                                                      SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender,usersfrom.username as name_from,usersto.username as name_to
+                                                      FROM transfers 
+                                                      
+                                                      LEFT JOIN accounts as fromaccount on account_from = account_id
+                                                      LEFT JOIN accounts as toaccount on toaccount.account_id = account_to
+                                                      
+                                                      LEFT JOIN users as usersfrom on usersfrom.user_id = fromaccount.user_id
+                                                      LEFT JOIN users as usersto on usersto.user_id = toaccount.user_id
+                                                      WHERE account_to = 2001", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -86,6 +111,7 @@ namespace TenmoServer.DAO
                     while (reader.Read())
                     {
                         Transfer transfer = GetTransferFromReader(reader);
+                        
                         listOfTransfers.Add(transfer);
                     }
                 }
@@ -193,6 +219,9 @@ namespace TenmoServer.DAO
             Transfer transfer = new Transfer((int)reader["transfer_type_id"], (int)reader["transfer_status_id"], 
                 (int)reader["account_from"], (int)reader["account_to"], (decimal)reader["amount"]);
             transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
+            transfer.Sender = (int)reader["Sender"];
+            transfer.toUser = (string)reader["name_to"];
+            transfer.fromUser = (string)reader["name_from"];
             return transfer;
         }
 

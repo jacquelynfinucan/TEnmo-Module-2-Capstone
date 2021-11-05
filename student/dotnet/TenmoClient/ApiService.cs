@@ -95,6 +95,7 @@ namespace TenmoClient
 
         public void TransferMoney(int userId, decimal xferAmount)
         {
+
             RestRequest request = new RestRequest(API_URL + "account/transfers/" + UserService.GetUserId() + "?receivingUserId=" + userId + "&amount=" + xferAmount);
             IRestResponse response = client.Post(request);
 
