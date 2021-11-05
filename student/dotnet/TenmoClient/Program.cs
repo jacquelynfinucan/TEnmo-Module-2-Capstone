@@ -100,8 +100,36 @@ namespace TenmoClient
                 {
                     List<Transfer> pastTransfers = apiService.GetPastTransfers();
                     console.PrintTransfers(pastTransfers);
+
                     int transferId = console.PromptForTransferId();
+                    if (transferId == 0)
+                    {
+                        MenuSelection();
+                    }
+                    bool bobsBool = false;
+                    while (bobsBool == false && transferId != 0)
+                    {
+                        foreach (Transfer transfer in pastTransfers)
+                        {
+                            if (transfer.TransferId.Equals(transferId))
+                            {
+                                bobsBool = true;
+                                break;
+                            }
+                        }
+                        if (bobsBool == false)
+                        {
+                            Console.WriteLine("Transfer ID is not valid. Please enter a valid ID: ");
+                            console.PrintTransfers(pastTransfers);
+                            transferId = console.PromptForTransferId();
+                        }
+                    }
+                    if(transferId == 0)
+                    {
+                        MenuSelection();
+                    }
                     console.PrintTransferById(apiService.GetTransferDetailsById(transferId));
+
                 }
                 else if (menuSelection == 3)
                 {
@@ -116,8 +144,36 @@ namespace TenmoClient
                         {
                             console.PrintUsers(users);
                             int userId = console.PromptForUserId();
+                            if (userId == 0)
+                            {
+                                MenuSelection();
+                            }
+                            bool bobsBool = false;
+                            while (bobsBool == false && userId != 0)
+                            {
+                                foreach (User user in users)
+                                {
+                                    if (user.UserId.Equals(userId))
+                                    {
+                                        bobsBool = true;
+                                        break;
+                                    }
+                                }
+                                if (bobsBool == false)
+                                {
+                                    Console.WriteLine("User ID is not valid. Please enter a valid ID: ");
+                                    console.PrintUsers(users);
+                                    userId = console.PromptForUserId();
+                                }
+                            }
+                            if (userId == 0)
+                            {
+                                MenuSelection();
+                            }
                             decimal xferAmount = console.PromptForAmount();
+
                             apiService.TransferMoney(userId, xferAmount);
+                            
                         }
                     }
                     catch (Exception ex)
