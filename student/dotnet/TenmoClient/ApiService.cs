@@ -90,15 +90,8 @@ namespace TenmoClient
 
         public void TransferMoney(int userId, decimal xferAmount)
         {
-<<<<<<< HEAD
-            Transfer newTransfer = new Transfer(UserService.GetUserId(), userId, xferAmount);
-            //Transfer newTransfer = new Transfer(transferId, transferTypeId, transferStatusId, accountFrom, userId, xferAmount);
-            RestRequest request = new RestRequest(API_URL + "account/transfers/" + UserService.GetUserId() + "?receivingUserId=" + userId + "&amount=" + xferAmount);
 
-            request.AddJsonBody(newTransfer);
-=======
             RestRequest request = new RestRequest(API_URL + "account/transfers/" + UserService.GetUserId() + "?receivingUserId=" + userId + "&amount=" + xferAmount);
->>>>>>> dd14b607d2ddba0a95c947d20a1dcf66d4e66c70
             IRestResponse response = client.Post(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
