@@ -10,6 +10,9 @@ namespace TenmoClient
         private readonly static string API_BASE_URL = "https://localhost:44315/";
         private readonly IRestClient client = new RestClient();
 
+        public IRestClient getClient => client;
+
+
         //login endpoints
         public bool Register(LoginUser registerUser)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
+using RestSharp.Authenticators;
 
 namespace TenmoClient
 {
@@ -8,7 +9,7 @@ namespace TenmoClient
     {
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
-        private static readonly ApiService apiService = new ApiService("https://localhost:44315/");
+        private static readonly ApiService apiService = new ApiService("https://localhost:44315/",authService.getClient);
         private static readonly ConsoleService console = new ConsoleService();
 
 
@@ -42,6 +43,7 @@ namespace TenmoClient
                             if (user != null)
                             {
                                 UserService.SetLogin(user);
+                                //apiService.client.Authenticator = new JwtAuthenticator(user.Token);
                             }
                         }
                     }
