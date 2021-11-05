@@ -76,13 +76,19 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender
-                                                      FROM transfers
-                                                      WHERE account_from = {accountId}
+                    SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 1 as Sender,username as name
+                                                      FROM transfers 
+                                                      LEFT JOIN accounts on account_from = account_id
+                                                      LEFT JOIN users on users.user_id = accounts.user_id
+                                                      WHERE account_from = @accountId
+                                                      
                                                       UNION
-                                                      SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender
+                                                      
+                                                      SELECT transfer_id, transfer_type_id,  transfer_status_id, account_from, account_to, amount, 0 as Sender,username as name
                                                       FROM transfers
-                                                      WHERE account_to = {accountId}", conn);
+                                                      LEFT JOIN accounts on account_to = account_id
+                                                      LEFT JOIN users on users.user_id = accounts.user_id
+                                                      WHERE account_to = @accountId", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -224,6 +230,28 @@ namespace TenmoServer.DAO
             }
         }
 
+        public string GetUserNameFromAccountId(int accountId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(@"Select username from users
+                                                      JOIN accounts on users.user_id = accounts.user_id
+                                                      WHERE account_id = @accountId", conn);
+                    cmd.Parameters.AddWithValue("@accountId", accountId);
+
+                    string userName = (string)cmd.ExecuteScalar();
+                    return userName;
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }
