@@ -96,6 +96,7 @@ namespace TenmoServer.DAO
                     while (reader.Read())
                     {
                         Transfer transfer = GetTransferFromReader(reader);
+                        
                         listOfTransfers.Add(transfer);
                     }
                 }
@@ -203,6 +204,8 @@ namespace TenmoServer.DAO
             Transfer transfer = new Transfer((int)reader["transfer_type_id"], (int)reader["transfer_status_id"], 
                 (int)reader["account_from"], (int)reader["account_to"], (decimal)reader["amount"]);
             transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
+            transfer.Sender = (int)reader["Sender"];
+            transfer.username = (string)reader["name"];
             return transfer;
         }
 
