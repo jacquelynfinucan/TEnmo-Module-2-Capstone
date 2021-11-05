@@ -11,7 +11,7 @@ namespace TenmoClient
     public class ApiService
     {
         private readonly string API_URL = "https://localhost:44315/";
-        private readonly IRestClient client = new RestClient();
+        private readonly IRestClient client;
         private ApiUser user = new ApiUser();
 
         public bool LoggedIn { get { return !string.IsNullOrWhiteSpace(user.Token); } }

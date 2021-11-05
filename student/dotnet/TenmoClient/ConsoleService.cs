@@ -6,6 +6,11 @@ namespace TenmoClient
 {
     public class ConsoleService
     {
+        ApiService apiService;
+        public ConsoleService(ApiService apiService)
+        {
+            this.apiService = apiService;
+        }
         /// <summary>
         /// Prompts for transfer ID to view, approve, or reject
         /// </summary>
@@ -164,7 +169,6 @@ namespace TenmoClient
 
         public decimal PromptForAmount()
         {
-            ApiService apiService = new ApiService();
             decimal menuSelection;
             start:
             Console.WriteLine("Enter amount (0 to cancel): ");
