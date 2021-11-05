@@ -4,6 +4,8 @@ using TenmoServer.Models;
 using TenmoServer.Security;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace TenmoServer.Controllers
 {
@@ -72,11 +74,11 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transfers")]
         //use ?accountId=int query 
-       public List<Transfer> ShowUserTransfers(int userId)
+       public ActionResult<Transfer> ShowUserTransfers(int userId)
        {
             int accountId = accountDao.GetAccountIdFromUserId(userId);
             List<Transfer> listOfTransfers = accountDao.GetAllTransfersForAccount(accountId);
-            return listOfTransfers;
+            return Ok(listOfTransfers);
        }
 
         [HttpGet("transfers/{transferId}")]

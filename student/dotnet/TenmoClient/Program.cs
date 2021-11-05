@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
+using RestSharp.Authenticators;
 
 namespace TenmoClient
 {
     class Program
     {
-        private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
-        private static readonly ApiService apiService = new ApiService("https://localhost:44315/");
-        private static readonly ConsoleService console = new ConsoleService();
+        private static readonly ApiService apiService = new ApiService("https://localhost:44315/",authService.getClient);
+        private static readonly ConsoleService consoleService = new ConsoleService(apiService);
 
 
         static void Main(string[] args)
@@ -42,6 +42,7 @@ namespace TenmoClient
                             if (user != null)
                             {
                                 UserService.SetLogin(user);
+                                //apiService.client.Authenticator = new JwtAuthenticator(user.Token);
                             }
                         }
                     }
@@ -94,14 +95,14 @@ namespace TenmoClient
                 else if (menuSelection == 1)
                 {
                     decimal? balance = apiService.GetBalance();
-                    console.PrintBalance(balance);
+                    consoleService.PrintBalance(balance);
                 }
                 else if (menuSelection == 2)
                 {
                     List<Transfer> pastTransfers = apiService.GetPastTransfers();
-                    console.PrintTransfers(pastTransfers);
+                    consoleService.PrintTransfers(pastTransfers);
 
-                    int transferId = console.PromptForTransferId();
+                    int transferId = consoleService.PromptForTransferId();
                     if (transferId == 0)
                     {
                         MenuSelection();
@@ -120,15 +121,15 @@ namespace TenmoClient
                         if (bobsBool == false)
                         {
                             Console.WriteLine("Transfer ID is not valid. Please enter a valid ID: ");
-                            console.PrintTransfers(pastTransfers);
-                            transferId = console.PromptForTransferId();
+                            consoleService.PrintTransfers(pastTransfers);
+                            transferId = consoleService.PromptForTransferId();
                         }
                     }
                     if(transferId == 0)
                     {
                         MenuSelection();
                     }
-                    console.PrintTransferById(apiService.GetTransferDetailsById(transferId));
+                    consoleService.PrintTransferById(apiService.GetTransferDetailsById(transferId));
 
                 }
                 else if (menuSelection == 3)
@@ -142,8 +143,8 @@ namespace TenmoClient
                         List<User> users = apiService.GetAllUsers();
                         if (users != null && users.Count > 0)
                         {
-                            console.PrintUsers(users);
-                            int userId = console.PromptForUserId();
+                            consoleService.PrintUsers(users);
+                            int userId = consoleService.PromptForUserId();
                             if (userId == 0)
                             {
                                 MenuSelection();
@@ -162,15 +163,15 @@ namespace TenmoClient
                                 if (bobsBool == false)
                                 {
                                     Console.WriteLine("User ID is not valid. Please enter a valid ID: ");
-                                    console.PrintUsers(users);
-                                    userId = console.PromptForUserId();
+                                    consoleService.PrintUsers(users);
+                                    userId = consoleService.PromptForUserId();
                                 }
                             }
                             if (userId == 0)
                             {
                                 MenuSelection();
                             }
-                            decimal xferAmount = console.PromptForAmount();
+                            decimal xferAmount = consoleService.PromptForAmount();
                             if (xferAmount != 0)
                             {
                                 apiService.TransferMoney(userId, xferAmount);

@@ -11,6 +11,9 @@ namespace TenmoClient
         private readonly IRestClient client = new RestClient();
         private ApiUser user = new ApiUser();
 
+        public IRestClient getClient => client;
+
+
         //login endpoints
         public bool Register(LoginUser registerUser)
         {
