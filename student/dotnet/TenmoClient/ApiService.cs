@@ -21,6 +21,11 @@ namespace TenmoClient
             API_URL = api_url;
         }
 
+        public ApiService()
+        {
+
+        }
+
         public Account GetAccount()
         {
             Account userAccount = new Account();
@@ -122,7 +127,21 @@ namespace TenmoClient
             return null;
         }
 
+        public string GetUsername(int accountId)
+        {
+            RestRequest request = new RestRequest(API_URL + "users/" + accountId);
+            IRestResponse<string> response = client.Get<string>(request);
 
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+            return "";
+        }
         private void ProcessErrorResponse(IRestResponse response)
         {
             if (response.ResponseStatus != ResponseStatus.Completed)

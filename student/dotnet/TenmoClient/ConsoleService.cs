@@ -110,7 +110,14 @@ namespace TenmoClient
             Console.WriteLine("--------------------------------------------");
             foreach (Transfer transfer in transfers)
             {
-                Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFrom}            ${transfer.Amount}");
+                if(transfer.Sender == 0)
+                {
+                    Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFrom}            ${transfer.Amount}");
+                }
+                else if(transfer.Sender == 1)
+                {
+                    Console.WriteLine($"{transfer.TransferId}          To: {transfer.AccountTo}            ${transfer.Amount}");
+                }
             }
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine();
@@ -118,12 +125,15 @@ namespace TenmoClient
 
         public void PrintTransferById(Transfer transfer)
         {
+            ApiService apiService = new ApiService();
+            string userFrom = apiService.GetUsername(transfer.AccountFrom);
+            string userTo = apiService.GetUsername(transfer.AccountTo);
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Transfer Details");
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine(" Transfer Id: " + transfer.TransferId);
-            Console.WriteLine(" From: " + transfer.AccountFrom);
-            Console.WriteLine(" To: " + transfer.AccountTo);
+            Console.WriteLine(" From: " + userFrom);
+            Console.WriteLine(" To: " + userTo);
             Console.WriteLine(" Transfer Type: " + transfer.TransferTypeId);
             Console.WriteLine(" Transfer Status: " + transfer.TransferStatusId);
             Console.WriteLine(" Amount: " + transfer.Amount);
