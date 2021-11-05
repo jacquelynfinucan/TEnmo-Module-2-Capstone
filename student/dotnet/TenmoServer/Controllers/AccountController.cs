@@ -3,11 +3,13 @@ using TenmoServer.DAO;
 using TenmoServer.Models;
 using TenmoServer.Security;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TenmoServer.Controllers
 {
     [Route("[Controller]")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly IAccountSQLDao accountDao;

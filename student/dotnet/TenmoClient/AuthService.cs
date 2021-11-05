@@ -9,6 +9,7 @@ namespace TenmoClient
     {
         private readonly static string API_BASE_URL = "https://localhost:44315/";
         private readonly IRestClient client = new RestClient();
+        private ApiUser user = new ApiUser();
 
         //login endpoints
         public bool Register(LoginUser registerUser)
@@ -65,6 +66,7 @@ namespace TenmoClient
             }
             else
             {
+                user.Token = response.Data.Token;
                 client.Authenticator = new JwtAuthenticator(response.Data.Token);
                 return response.Data;
             }
