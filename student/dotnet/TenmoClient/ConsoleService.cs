@@ -86,7 +86,7 @@ namespace TenmoClient
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine(" Account Id: " + account.AccountId);
             Console.WriteLine(" User Id: " + account.UserId);
-            Console.WriteLine(" Balance: " + account.Balance);
+            Console.WriteLine(" Balance: $" + account.Balance);
         }
         public void PrintUsers(List<User> users)
         {
@@ -140,35 +140,47 @@ namespace TenmoClient
             Console.WriteLine(" To: " + userTo);
             Console.WriteLine(" Transfer Type: " + typeWord);
             Console.WriteLine(" Transfer Status: " + statusWord);
-            Console.WriteLine(" Amount: " + transfer.Amount);
+            Console.WriteLine(" Amount: $" + transfer.Amount);
             Console.WriteLine("--------------------------------------------");
         }
         public int PromptForUserId()
         {
             int menuSelection;
+            start:
             Console.WriteLine("Enter ID of user you are sending to (0 to cancel): ");
-
+            
             if (!int.TryParse(Console.ReadLine(), out menuSelection))
             {
                 Console.WriteLine("Invalid input. Please enter only a number.");
+                goto start;
+            }
+            if(menuSelection == UserService.GetUserId())
+            {
+                Console.WriteLine("Cannot send money to yourself. Please enter another user's ID.");
+                goto start;
             }
             return menuSelection;
         }
 
         public decimal PromptForAmount()
         {
+            ApiService apiService = new ApiService();
             decimal menuSelection;
             start:
-            Console.WriteLine("Enter amount: ");
+            Console.WriteLine("Enter amount (0 to cancel): ");
             if (!decimal.TryParse(Console.ReadLine(), out menuSelection))
             {
                 Console.WriteLine("Invalid input. Please enter only a number.");
                 goto start;
             }
-            if (menuSelection <= 0.00M)
+            if (menuSelection < 0.00M)
             {
                 Console.WriteLine("Invalid input. Please enter a number greater than 0.");
-                Console.WriteLine("Enter amount: ");
+                goto start;
+            }
+            if(menuSelection > apiService.GetBalance())
+            {
+                Console.WriteLine("Insufficient funds. Please enter an amount within your current balance.");
                 goto start;
             }
             return menuSelection;
@@ -177,7 +189,7 @@ namespace TenmoClient
         public int PromptForTransferId()
         {
             int menuSelection;
-            Console.WriteLine("Enter ID of transfer you'd like more details of (0 to cancel): "); //need to trap 0 value here
+            Console.WriteLine("Enter ID of transfer you'd like more details of (0 to cancel): "); 
             if (!int.TryParse(Console.ReadLine(), out menuSelection))
             {
                 Console.WriteLine("Invalid input. Please enter only a number.");

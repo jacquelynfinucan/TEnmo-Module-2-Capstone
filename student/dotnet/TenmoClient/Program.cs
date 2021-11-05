@@ -173,8 +173,11 @@ namespace TenmoClient
                                 MenuSelection();
                             }
                             decimal xferAmount = console.PromptForAmount();
-
-                            apiService.TransferMoney(userId, xferAmount);
+                            if (xferAmount != 0)
+                            {
+                                apiService.TransferMoney(userId, xferAmount);
+                            }
+                            
                             
                         }
                     }
