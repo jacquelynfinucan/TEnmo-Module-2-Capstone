@@ -10,7 +10,7 @@ namespace TenmoClient
         private static readonly AuthService authService = new AuthService();
         private static readonly ApiService apiService = new ApiService("https://localhost:44315/",authService.getClient);
         private static readonly ConsoleService consoleService = new ConsoleService(apiService);
-
+        public static DynamicConsole dyn = new DynamicConsole(); 
 
         static void Main(string[] args)
         {
@@ -24,14 +24,14 @@ namespace TenmoClient
                 int loginRegister = -1;
                 while (loginRegister != 1 && loginRegister != 2)
                 {
-                    Console.WriteLine("Welcome to TEnmo!");
-                    Console.WriteLine("1: Login");
-                    Console.WriteLine("2: Register");
+                    dyn.Add("Welcome to TEnmo!");
+                    dyn.Add("1: Login");
+                    dyn.Add("2: Register");
                     Console.Write("Please choose an option: ");
 
                     if (!int.TryParse(Console.ReadLine(), out loginRegister))
                     {
-                        Console.WriteLine("Invalid input. Please enter only a number.");
+                        dyn.Add("Invalid input. Please enter only a number.");
                     }
                     else if (loginRegister == 1)
                     {
@@ -55,15 +55,15 @@ namespace TenmoClient
                             isRegistered = authService.Register(registerUser);
                             if (isRegistered)
                             {
-                                Console.WriteLine("");
-                                Console.WriteLine("Registration successful. You can now log in.");
+                                dyn.Add("");
+                                dyn.Add("Registration successful. You can now log in.");
                                 loginRegister = -1; //reset outer loop to allow choice for login
                             }
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Invalid selection.");
+                        dyn.Add("Invalid selection.");
                     }
                 }
 
@@ -76,21 +76,21 @@ namespace TenmoClient
             int menuSelection = -1;
             while (menuSelection != 0)
             {
-                Console.WriteLine("");
-                Console.WriteLine("Welcome to TEnmo! Please make a selection: ");
-                Console.WriteLine("1: View your current balance");
-                Console.WriteLine("2: View your past transfers");
-                Console.WriteLine("3: View your pending requests");
-                Console.WriteLine("4: Send TE bucks");
-                Console.WriteLine("5: Request TE bucks");
-                Console.WriteLine("6: Log in as different user");
-                Console.WriteLine("0: Exit");
-                Console.WriteLine("---------");
+                dyn.Add("");
+                dyn.Add("Welcome to TEnmo! Please make a selection: ");
+                dyn.Add("1: View your current balance");
+                dyn.Add("2: View your past transfers");
+                dyn.Add("3: View your pending requests");
+                dyn.Add("4: Send TE bucks");
+                dyn.Add("5: Request TE bucks");
+                dyn.Add("6: Log in as different user");
+                dyn.Add("0: Exit");
+                dyn.Add("---------");
                 Console.Write("Please choose an option: ");
 
                 if (!int.TryParse(Console.ReadLine(), out menuSelection))
                 {
-                    Console.WriteLine("Invalid input. Please enter only a number.");
+                    dyn.Add("Invalid input. Please enter only a number.");
                 }
                 else if (menuSelection == 1)
                 {
@@ -120,7 +120,7 @@ namespace TenmoClient
                         }
                         if (bobsBool == false)
                         {
-                            Console.WriteLine("Transfer ID is not valid. Please enter a valid ID: ");
+                            dyn.Add("Transfer ID is not valid. Please enter a valid ID: ");
                             consoleService.PrintTransfers(pastTransfers);
                             transferId = consoleService.PromptForTransferId();
                         }
@@ -162,7 +162,7 @@ namespace TenmoClient
                                 }
                                 if (bobsBool == false)
                                 {
-                                    Console.WriteLine("User ID is not valid. Please enter a valid ID: ");
+                                    dyn.Add("User ID is not valid. Please enter a valid ID: ");
                                     consoleService.PrintUsers(users);
                                     userId = consoleService.PromptForUserId();
                                 }
@@ -182,7 +182,7 @@ namespace TenmoClient
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        dyn.Add(ex.Message);
                     }
                 }
                 else if (menuSelection == 5)
@@ -191,14 +191,14 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 6)
                 {
-                    Console.WriteLine("");
+                    dyn.Add("");
                     UserService.SetLogin(new ApiUser()); //wipe out previous login info
                     Console.Clear();
                     menuSelection = 0;
                 }
                 else
                 {
-                    Console.WriteLine("Goodbye!");
+                    dyn.Add("Goodbye!");
                     Environment.Exit(0);
                 }
             }
