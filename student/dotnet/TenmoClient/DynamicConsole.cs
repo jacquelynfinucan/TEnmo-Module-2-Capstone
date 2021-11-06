@@ -9,6 +9,8 @@ namespace TenmoClient
     public class DynamicConsole
     {
         private List<ConsoleItem> listOfItems = new List<ConsoleItem>();
+
+        public int Length { get { return listOfItems.Count(); } }
         public ConsoleItem this[int i]
         {
             get
@@ -55,7 +57,14 @@ namespace TenmoClient
             }
         }
 
-
+        public string ReadLine()
+        {
+            var var = Console.CursorTop;
+            var str = Console.ReadLine();
+            Console.SetCursorPosition(0, var);
+            Console.WriteLine(new string(' ', Console.BufferWidth));
+            return str;
+        }
 
         public class ConsoleItem
         {
@@ -88,7 +97,7 @@ namespace TenmoClient
                     for(int i = 0; i <Text.Length; i++)
                     {
                         Console.Write(Text[i]);
-                        await Task.Delay(50);
+                        await Task.Delay(12);
                     }
                 }
 

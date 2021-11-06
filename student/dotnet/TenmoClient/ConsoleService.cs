@@ -20,7 +20,7 @@ namespace TenmoClient
         {
             Program.dyn.Add("");
             Console.Write("Please enter transfer ID to " + action + " (0 to cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int auctionId))
+            if (!int.TryParse(Program.dyn.ReadLine(), out int auctionId))
             {
                 Program.dyn.Add("Invalid input. Only input a number.");
                 return 0;
@@ -34,7 +34,7 @@ namespace TenmoClient
         public LoginUser PromptForLogin()
         {
             Program.dyn.Add("Username: ");
-            string username = Console.ReadLine();
+            string username = Program.dyn.ReadLine();
             string password = GetPasswordFromConsole("Password: ");
 
             LoginUser loginUser = new LoginUser
@@ -136,7 +136,7 @@ namespace TenmoClient
             string typeWord = "Send";
 
             string statusWord = "Approved";
-
+            Program.ResetToBaseMenu();
             Program.dyn.Add("--------------------------------------------");
             Program.dyn.Add("Transfer Details");
             Program.dyn.Add("--------------------------------------------");
@@ -154,7 +154,7 @@ namespace TenmoClient
             start:
             Program.dyn.Add("Enter ID of user you are sending to (0 to cancel): ");
             
-            if (!int.TryParse(Console.ReadLine(), out menuSelection))
+            if (!int.TryParse(Program.dyn.ReadLine(), out menuSelection))
             {
                 Program.dyn.Add("Invalid input. Please enter only a number.");
                 goto start;
@@ -172,7 +172,7 @@ namespace TenmoClient
             decimal menuSelection;
             start:
             Program.dyn.Add("Enter amount (0 to cancel): ");
-            if (!decimal.TryParse(Console.ReadLine(), out menuSelection))
+            if (!decimal.TryParse(Program.dyn.ReadLine(), out menuSelection))
             {
                 Program.dyn.Add("Invalid input. Please enter only a number.");
                 goto start;
@@ -194,7 +194,7 @@ namespace TenmoClient
         {
             int menuSelection;
             Program.dyn.Add("Enter ID of transfer you'd like more details of (0 to cancel): "); 
-            if (!int.TryParse(Console.ReadLine(), out menuSelection))
+            if (!int.TryParse(Program.dyn.ReadLine(), out menuSelection))
             {
                 Program.dyn.Add("Invalid input. Please enter only a number.");
             }

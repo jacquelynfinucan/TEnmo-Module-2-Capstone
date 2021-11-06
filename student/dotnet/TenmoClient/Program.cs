@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using RestSharp.Authenticators;
+using System.Threading.Tasks;
 
 namespace TenmoClient
 {
@@ -12,12 +13,12 @@ namespace TenmoClient
         private static readonly ConsoleService consoleService = new ConsoleService(apiService);
         public static DynamicConsole dyn = new DynamicConsole(); 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Run();
+            await Run();
         }
 
-        private static void Run()
+        private static async Task Run()
         {
             while(true)
             {
@@ -27,14 +28,14 @@ namespace TenmoClient
                     dyn.Add("Welcome to TEnmo!");
                     dyn.Add("1: Login");
                     dyn.Add("2: Register");
-                    Console.Write("Please choose an option: ");
 
-                    if (!int.TryParse(Console.ReadLine(), out loginRegister))
+                    if (!int.TryParse(dyn.ReadLine(), out loginRegister))
                     {
                         dyn.Add("Invalid input. Please enter only a number.");
                     }
                     else if (loginRegister == 1)
                     {
+                        await RunDynAdjust(loginRegister);
                         while (!UserService.IsLoggedIn()) //will keep looping until user is logged in
                         {
                             LoginUser loginUser = consoleService.PromptForLogin();
@@ -48,6 +49,8 @@ namespace TenmoClient
                     }
                     else if (loginRegister == 2)
                     {
+                        await RunDynAdjust(loginRegister);
+
                         bool isRegistered = false;
                         while (!isRegistered) //will keep looping until user is registered
                         {
@@ -66,46 +69,66 @@ namespace TenmoClient
                         dyn.Add("Invalid selection.");
                     }
                 }
-
-                MenuSelection();
+                dyn.Clear();
+                indexToReset = null;
+                await MenuSelection();
             }
         }
 
-        private static void MenuSelection()
+        private static async Task RunDynAdjust(int menuSelected)
+        {
+                    Console.CursorVisible = false;
+            if (indexToReset != null)
+            {
+                await dyn[indexToReset.Value].ChangeColor(ConsoleColor.White,true);
+            }
+            ResetToBaseMenu(-4);
+            await dyn[menuSelected].ChangeColor(ConsoleColor.Green,true);
+            indexToReset = menuSelected;
+        }
+
+
+
+        private static int? indexToReset = null; 
+        private static async Task MenuSelection()
         {
             int menuSelection = -1;
             while (menuSelection != 0)
             {
-                dyn.Add("");
-                dyn.Add("Welcome to TEnmo! Please make a selection: ");
-                dyn.Add("1: View your current balance");
-                dyn.Add("2: View your past transfers");
-                dyn.Add("3: View your pending requests");
-                dyn.Add("4: Send TE bucks");
-                dyn.Add("5: Request TE bucks");
-                dyn.Add("6: Log in as different user");
-                dyn.Add("0: Exit");
-                dyn.Add("---------");
-                Console.Write("Please choose an option: ");
+                if (dyn.Length == 0)
+                {
+                    dyn.Add("");
+                    dyn.Add("Welcome to TEnmo! Please make a selection: ");
+                    dyn.Add("1: View your current balance");
+                    dyn.Add("2: View your past transfers");
+                   //dyn.Add("3: View your pending requests");
+                     dyn.Add("3: Send TE bucks");
+                   //dyn.Add("3: Request TE bucks");
+                    dyn.Add("4: Log in as different user");
+                    dyn.Add("0: Exit");
+                    dyn.Add("---------");
+                }
 
-                if (!int.TryParse(Console.ReadLine(), out menuSelection))
+                if (!int.TryParse(dyn.ReadLine(), out menuSelection))
                 {
                     dyn.Add("Invalid input. Please enter only a number.");
                 }
                 else if (menuSelection == 1)
                 {
+                    await MenuDynAdjust(menuSelection);
                     decimal? balance = apiService.GetBalance();
                     consoleService.PrintBalance(balance);
                 }
                 else if (menuSelection == 2)
                 {
+                   await  MenuDynAdjust(menuSelection);
                     List<Transfer> pastTransfers = apiService.GetPastTransfers();
                     consoleService.PrintTransfers(pastTransfers);
 
                     int transferId = consoleService.PromptForTransferId();
                     if (transferId == 0)
                     {
-                        MenuSelection();
+                        await MenuSelection();
                     }
                     bool bobsBool = false;
                     while (bobsBool == false && transferId != 0)
@@ -127,17 +150,19 @@ namespace TenmoClient
                     }
                     if(transferId == 0)
                     {
-                        MenuSelection();
+                        await MenuSelection ();
                     }
                     consoleService.PrintTransferById(apiService.GetTransferDetailsById(transferId));
 
                 }
+                //else if (menuSelection == 3)
+                //{
+                //    // View my pending transfer requests.
+                //}
                 else if (menuSelection == 3)
                 {
-                    // View my pending transfer requests.
-                }
-                else if (menuSelection == 4)
-                {                  
+                    await MenuDynAdjust (menuSelection);
+
                     try
                     {
                         List<User> users = apiService.GetAllUsers();
@@ -147,7 +172,7 @@ namespace TenmoClient
                             int userId = consoleService.PromptForUserId();
                             if (userId == 0)
                             {
-                                MenuSelection();
+                                await MenuSelection ();
                             }
                             bool bobsBool = false;
                             while (bobsBool == false && userId != 0)
@@ -163,13 +188,13 @@ namespace TenmoClient
                                 if (bobsBool == false)
                                 {
                                     dyn.Add("User ID is not valid. Please enter a valid ID: ");
-                                    consoleService.PrintUsers(users);
+                                    //consoleService.PrintUsers(users);
                                     userId = consoleService.PromptForUserId();
                                 }
                             }
                             if (userId == 0)
                             {
-                                MenuSelection();
+                                await MenuSelection();
                             }
                             decimal xferAmount = consoleService.PromptForAmount();
                             if (xferAmount != 0)
@@ -185,22 +210,38 @@ namespace TenmoClient
                         dyn.Add(ex.Message);
                     }
                 }
-                else if (menuSelection == 5)
+                //else if (menuSelection == 5)
+                //{
+                //    // Request TE Bucks from another user.
+                //}
+                else if (menuSelection == 4)
                 {
-                    // Request TE Bucks from another user.
-                }
-                else if (menuSelection == 6)
-                {
+                    await MenuDynAdjust(menuSelection);
+
                     dyn.Add("");
                     UserService.SetLogin(new ApiUser()); //wipe out previous login info
-                    Console.Clear();
+                    dyn.Clear();
                     menuSelection = 0;
                 }
-                else
-                {
-                    dyn.Add("Goodbye!");
-                    Environment.Exit(0);
-                }
+            }
+        }
+
+        private static async Task MenuDynAdjust(int menuSelected)
+        {
+            Console.CursorVisible = false;
+            if (indexToReset != null)
+            {
+                await dyn[indexToReset.Value].ChangeColor(ConsoleColor.White,true);
+            }
+            ResetToBaseMenu();
+            await dyn[menuSelected + 1].ChangeColor(ConsoleColor.Green,true);
+            indexToReset = menuSelected + 1;
+        }
+        public static void ResetToBaseMenu(int offset = 0)
+        {
+            if (dyn.Length > 8+offset)
+            {
+                dyn.Remove(dyn.Length - 8+offset);
             }
         }
     }
