@@ -11,23 +11,37 @@ namespace TenmoClient
         private static readonly AuthService authService = new AuthService();
         private static readonly ApiService apiService = new ApiService("https://localhost:44315/",authService.getClient);
         private static readonly ConsoleService consoleService = new ConsoleService(apiService);
-        public static DynamicConsole dyn = new DynamicConsole(); 
-
+        public static DynamicConsole dyn = new DynamicConsole();
+        public static bool exitLogin = false;
+        public static bool exit = false;
         static async Task Main(string[] args)
         {
             await Run();
+            dyn.Clear();
+            dyn.Add("Bye! Thanks for using TEnmo!");
+            dyn[0].DoARainbow();
+            await Task.Delay(10000);
         }
 
         private static async Task Run()
         {
-            while(true)
+            while(!exit)
             {
                 int loginRegister = -1;
                 while (loginRegister != 1 && loginRegister != 2)
                 {
-                    dyn.Add("Welcome to TEnmo!");
-                    dyn.Add("1: Login");
-                    dyn.Add("2: Register");
+                    startAgain:
+                    if (indexToReset != null)
+                    {
+                        await dyn[indexToReset.Value].ChangeColor(ConsoleColor.White, true);
+                    }
+                    if (dyn.Length < 3)
+                    {
+                        dyn.Add("Welcome to TEnmo!");
+                        dyn.Add("1: Login");
+                        dyn.Add("2: Register");
+                    }
+                        
 
                     if (!int.TryParse(dyn.ReadLine(), out loginRegister))
                     {
@@ -38,6 +52,7 @@ namespace TenmoClient
                         await RunDynAdjust(loginRegister);
                         while (!UserService.IsLoggedIn()) //will keep looping until user is logged in
                         {
+                            if (exitLogin) { exitLogin = false; goto startAgain; }
                             LoginUser loginUser = consoleService.PromptForLogin();
                             ApiUser user = authService.Login(loginUser);
                             if (user != null)
@@ -58,7 +73,7 @@ namespace TenmoClient
                             isRegistered = authService.Register(registerUser);
                             if (isRegistered)
                             {
-                                dyn.Add("");
+                                ResetToBaseMenu(-5);
                                 dyn.Add("Registration successful. You can now log in.");
                                 loginRegister = -1; //reset outer loop to allow choice for login
                             }
@@ -82,7 +97,7 @@ namespace TenmoClient
             {
                 await dyn[indexToReset.Value].ChangeColor(ConsoleColor.White,true);
             }
-            ResetToBaseMenu(-4);
+            ResetToBaseMenu(-5);
             await dyn[menuSelected].ChangeColor(ConsoleColor.Green,true);
             indexToReset = menuSelected;
         }
@@ -128,6 +143,7 @@ namespace TenmoClient
                     int transferId = consoleService.PromptForTransferId();
                     if (transferId == 0)
                     {
+                        ResetToBaseMenu();
                         await MenuSelection();
                     }
                     bool bobsBool = false;
@@ -221,7 +237,12 @@ namespace TenmoClient
                     dyn.Add("");
                     UserService.SetLogin(new ApiUser()); //wipe out previous login info
                     dyn.Clear();
+                    indexToReset = null;
                     menuSelection = 0;
+                }
+                else if(menuSelection == 0)
+                {
+                    exit = true;
                 }
             }
         }
@@ -241,7 +262,7 @@ namespace TenmoClient
         {
             if (dyn.Length > 8+offset)
             {
-                dyn.Remove(dyn.Length - 8+offset);
+                dyn.Remove(dyn.Length - (8+offset));
             }
         }
     }

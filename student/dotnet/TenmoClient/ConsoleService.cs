@@ -35,6 +35,7 @@ namespace TenmoClient
         {
             Program.dyn.Add("Username: ");
             string username = Program.dyn.ReadLine();
+            Program.dyn.Remove(1);
             string password = GetPasswordFromConsole("Password: ");
 
             LoginUser loginUser = new LoginUser

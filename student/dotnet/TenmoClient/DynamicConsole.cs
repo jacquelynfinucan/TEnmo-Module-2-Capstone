@@ -104,36 +104,50 @@ namespace TenmoClient
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
-            public async Task DoARainbow()
+            public async Task ChangeColorPrecise(ConsoleColor color, bool slow = true)
             {
-                Console.CursorVisible = false;
-                while(true)
-                {
-                    await this.ChangeColor(ConsoleColor.Red, true);
-                    await this.ChangeColor(ConsoleColor.Yellow, true);
-                    await this.ChangeColor(ConsoleColor.Green, true);
-                    await this.ChangeColor(ConsoleColor.Blue, true);
-                }
-                Console.CursorVisible = true;
 
+                Console.SetCursorPosition(0, ItemIndex);
+                Console.ForegroundColor = color;
+
+                if (!slow)
+                {
+                    Console.WriteLine(Text);
+                }
+                else
+                {
+                    for (int i = 0; i < Text.Length; i++)
+                    {
+
+                        Console.SetCursorPosition(i, ItemIndex);
+                        Console.ForegroundColor = color;
+                        Console.Write(Text[i]);
+                        await Task.Delay(150);
+                    }
+                }
+
+                Console.ForegroundColor = ConsoleColor.White;
             }
-            public async Task DoAJankRainbow()
+
+            public async Task DoARainbow()
             {
                 Console.CursorVisible = false;
                 while (true)
                 {
-                    this.ChangeColor(ConsoleColor.Red, true);
-                    await Task.Delay(250);
-                    this.ChangeColor(ConsoleColor.Yellow, true);
-                    await Task.Delay(250);
-                    this.ChangeColor(ConsoleColor.Green, true);
-                    await Task.Delay(250);
-                    this.ChangeColor(ConsoleColor.Blue, true); 
-                    await Task.Delay(250);
+                    this.ChangeColorPrecise(ConsoleColor.Red, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Yellow, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Green, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Magenta, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Blue, true);
+                    await Task.Delay(800);
                 }
                 Console.CursorVisible = true;
-
             }
+
             public void Remove()
             {
                 Console.SetCursorPosition(0, ItemIndex);
