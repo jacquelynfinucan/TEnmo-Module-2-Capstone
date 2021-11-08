@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FUNctions
+namespace TenmoClient
 {
     public class DynamicConsole
     {
         private List<ConsoleItem> listOfItems = new List<ConsoleItem>();
+
+        public int Length { get { return listOfItems.Count(); } }
         public ConsoleItem this[int i]
         {
             get
@@ -55,7 +57,14 @@ namespace FUNctions
             }
         }
 
-
+        public string ReadLine()
+        {
+            var var = Console.CursorTop;
+            var str = Console.ReadLine();
+            Console.SetCursorPosition(0, var);
+            Console.WriteLine(new string(' ', Console.BufferWidth));
+            return str;
+        }
 
         public class ConsoleItem
         {
@@ -88,7 +97,32 @@ namespace FUNctions
                     for(int i = 0; i <Text.Length; i++)
                     {
                         Console.Write(Text[i]);
-                        await Task.Delay(50);
+                        await Task.Delay(12);
+                    }
+                }
+
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            public async Task ChangeColorPrecise(ConsoleColor color, bool slow = true)
+            {
+
+                Console.SetCursorPosition(0, ItemIndex);
+                Console.ForegroundColor = color;
+
+                if (!slow)
+                {
+                    Console.WriteLine(Text);
+                }
+                else
+                {
+                    for (int i = 0; i < Text.Length; i++)
+                    {
+
+                        Console.SetCursorPosition(i, ItemIndex);
+                        Console.ForegroundColor = color;
+                        Console.Write(Text[i]);
+                        await Task.Delay(150);
                     }
                 }
 
@@ -98,33 +132,22 @@ namespace FUNctions
             public async Task DoARainbow()
             {
                 Console.CursorVisible = false;
-                while(true)
-                {
-                    await this.ChangeColor(ConsoleColor.Red, true);
-                    await this.ChangeColor(ConsoleColor.Yellow, true);
-                    await this.ChangeColor(ConsoleColor.Green, true);
-                    await this.ChangeColor(ConsoleColor.Blue, true);
-                }
-                Console.CursorVisible = true;
-
-            }
-            public async Task DoAJankRainbow()
-            {
-                Console.CursorVisible = false;
                 while (true)
                 {
-                    this.ChangeColor(ConsoleColor.Red, true);
-                    await Task.Delay(250);
-                    this.ChangeColor(ConsoleColor.Yellow, true);
-                    await Task.Delay(250);
-                    this.ChangeColor(ConsoleColor.Green, true);
-                    await Task.Delay(250);
-                    this.ChangeColor(ConsoleColor.Blue, true); 
-                    await Task.Delay(250);
+                    this.ChangeColorPrecise(ConsoleColor.Red, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Yellow, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Green, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Magenta, true);
+                    await Task.Delay(800);
+                    this.ChangeColorPrecise(ConsoleColor.Blue, true);
+                    await Task.Delay(800);
                 }
                 Console.CursorVisible = true;
-
             }
+
             public void Remove()
             {
                 Console.SetCursorPosition(0, ItemIndex);

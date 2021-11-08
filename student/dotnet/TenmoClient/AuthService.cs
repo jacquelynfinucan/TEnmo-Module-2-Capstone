@@ -23,18 +23,18 @@ namespace TenmoClient
 
             if (response.ResponseStatus != ResponseStatus.Completed)
             {
-                Console.WriteLine("An error occurred communicating with the server.");
+                Program.dyn.Add("An error occurred communicating with the server.");
                 return false;
             }
             else if (!response.IsSuccessful)
             {
                 if (!string.IsNullOrWhiteSpace(response.Data.Message))
                 {
-                    Console.WriteLine("An error message was received: " + response.Data.Message);
+                    Program.dyn.Add("An error message was received: " + response.Data.Message);
                 }
                 else
                 {
-                    Console.WriteLine("An error response was received from the server. The status code is " + (int)response.StatusCode);
+                    Program.dyn.Add("An error response was received from the server. The status code is " + (int)response.StatusCode);
                 }
                 return false;
             }
@@ -52,19 +52,23 @@ namespace TenmoClient
 
             if (response.ResponseStatus != ResponseStatus.Completed)
             {
-                Console.WriteLine("An error occurred communicating with the server.");
+                Program.dyn.Add("An error occurred communicating with the server.");
                 return null;
             }
             else if (!response.IsSuccessful)
             {
+                Program.ResetToBaseMenu(-5);
                 if (!string.IsNullOrWhiteSpace(response.Data.Message))
                 {
-                    Console.WriteLine("An error message was received: " + response.Data.Message);
+                    Program.dyn.Add("An error message was received: " + response.Data.Message);
+                    Program.exitLogin = true;
                 }
                 else
                 {
-                    Console.WriteLine("An error response was received from the server. The status code is " + (int)response.StatusCode);
+                    Program.dyn.Add("An error response was received from the server. The status code is " + (int)response.StatusCode);
+                    Program.exitLogin = true;
                 }
+
                 return null;
             }
             else

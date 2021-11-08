@@ -106,9 +106,10 @@ namespace TenmoClient
             }
             else
             {
-                Console.WriteLine("--------------------------------------------");
-                Console.WriteLine("Transfer Successful!");
-                Console.WriteLine("--------------------------------------------");
+                Program.ResetToBaseMenu();
+                Program.dyn.Add("--------------------------------------------");
+                Program.dyn.Add("Transfer Successful!");
+                Program.dyn.Add("--------------------------------------------");
             }
         }
 

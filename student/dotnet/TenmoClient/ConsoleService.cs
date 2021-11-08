@@ -18,11 +18,11 @@ namespace TenmoClient
         /// <returns>ID of transfers to view, approve, or reject</returns>
         public int PromptForTransferID(string action)
         {
-            Console.WriteLine("");
+            Program.dyn.Add("");
             Console.Write("Please enter transfer ID to " + action + " (0 to cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int auctionId))
+            if (!int.TryParse(Program.dyn.ReadLine(), out int auctionId))
             {
-                Console.WriteLine("Invalid input. Only input a number.");
+                Program.dyn.Add("Invalid input. Only input a number.");
                 return 0;
             }
             else
@@ -33,8 +33,9 @@ namespace TenmoClient
 
         public LoginUser PromptForLogin()
         {
-            Console.Write("Username: ");
-            string username = Console.ReadLine();
+            Program.dyn.Add("Username: ");
+            string username = Program.dyn.ReadLine();
+            Program.dyn.Remove(1);
             string password = GetPasswordFromConsole("Password: ");
 
             LoginUser loginUser = new LoginUser
@@ -48,7 +49,7 @@ namespace TenmoClient
         private string GetPasswordFromConsole(string displayMessage)
         {
             string pass = "";
-            Console.Write(displayMessage);
+            Program.dyn.Add(displayMessage);
             ConsoleKeyInfo key;
 
             do
@@ -72,60 +73,60 @@ namespace TenmoClient
             }
             // Stops Receving Keys Once Enter is Pressed
             while (key.Key != ConsoleKey.Enter);
-            Console.WriteLine("");
+            Program.dyn.Add("");
             return pass;
         }
 
         public void PrintBalance(decimal? balance)
         {
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Balance Details");
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine(" Your current account balance is: $" + balance);          
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add("Balance Details");
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add(" Your current account balance is: $" + balance);          
         }
 
         public void PrintAccount(Account account)
         {
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Account Details");
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine(" Account Id: " + account.AccountId);
-            Console.WriteLine(" User Id: " + account.UserId);
-            Console.WriteLine(" Balance: $" + account.Balance);
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add("Account Details");
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add(" Account Id: " + account.AccountId);
+            Program.dyn.Add(" User Id: " + account.UserId);
+            Program.dyn.Add(" Balance: $" + account.Balance);
         }
         public void PrintUsers(List<User> users)
         {
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Users");
-            Console.WriteLine("ID          Name");
-            Console.WriteLine("--------------------------------------------");
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add("Users");
+            Program.dyn.Add("ID          Name");
+            Program.dyn.Add("--------------------------------------------");
             foreach(User user in users)
             {
-                Console.WriteLine($"{user.UserId}          {user.Username}");
+                Program.dyn.Add($"{user.UserId}          {user.Username}");
             }
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine();
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add();
         }
 
         public void PrintTransfers(List<Transfer> transfers)
         {
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Transfers");
-            Console.WriteLine("ID             From/To           Amount");
-            Console.WriteLine("--------------------------------------------");
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add("Transfers");
+            Program.dyn.Add("ID             From/To           Amount");
+            Program.dyn.Add("--------------------------------------------");
             foreach (Transfer transfer in transfers)
             {
                 if(transfer.Sender == 0)
                 {
-                    Console.WriteLine($"{transfer.TransferId}          From: {transfer.fromUser}            ${transfer.Amount}");
+                    Program.dyn.Add($"{transfer.TransferId}          From: {transfer.fromUser}            ${transfer.Amount}");
                 }
                 else if(transfer.Sender == 1)
                 {
-                    Console.WriteLine($"{transfer.TransferId}          To: {transfer.toUser}            ${transfer.Amount}");
+                    Program.dyn.Add($"{transfer.TransferId}          To: {transfer.toUser}            ${transfer.Amount}");
                 }
             }
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine();
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add();
         }
 
         public void PrintTransferById(Transfer transfer)
@@ -136,32 +137,32 @@ namespace TenmoClient
             string typeWord = "Send";
 
             string statusWord = "Approved";
-
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Transfer Details");
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine(" Transfer Id: " + transfer.TransferId);
-            Console.WriteLine(" From: " + userFrom);
-            Console.WriteLine(" To: " + userTo);
-            Console.WriteLine(" Transfer Type: " + typeWord);
-            Console.WriteLine(" Transfer Status: " + statusWord);
-            Console.WriteLine(" Amount: $" + transfer.Amount);
-            Console.WriteLine("--------------------------------------------");
+            Program.ResetToBaseMenu();
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add("Transfer Details");
+            Program.dyn.Add("--------------------------------------------");
+            Program.dyn.Add(" Transfer Id: " + transfer.TransferId);
+            Program.dyn.Add(" From: " + userFrom);
+            Program.dyn.Add(" To: " + userTo);
+            Program.dyn.Add(" Transfer Type: " + typeWord);
+            Program.dyn.Add(" Transfer Status: " + statusWord);
+            Program.dyn.Add(" Amount: $" + transfer.Amount);
+            Program.dyn.Add("--------------------------------------------");
         }
         public int PromptForUserId()
         {
             int menuSelection;
             start:
-            Console.WriteLine("Enter ID of user you are sending to (0 to cancel): ");
+            Program.dyn.Add("Enter ID of user you are sending to (0 to cancel): ");
             
-            if (!int.TryParse(Console.ReadLine(), out menuSelection))
+            if (!int.TryParse(Program.dyn.ReadLine(), out menuSelection))
             {
-                Console.WriteLine("Invalid input. Please enter only a number.");
+                Program.dyn.Add("Invalid input. Please enter only a number.");
                 goto start;
             }
             if(menuSelection == UserService.GetUserId())
             {
-                Console.WriteLine("Cannot send money to yourself. Please enter another user's ID.");
+                Program.dyn.Add("Cannot send money to yourself. Please enter another user's ID.");
                 goto start;
             }
             return menuSelection;
@@ -171,20 +172,20 @@ namespace TenmoClient
         {
             decimal menuSelection;
             start:
-            Console.WriteLine("Enter amount (0 to cancel): ");
-            if (!decimal.TryParse(Console.ReadLine(), out menuSelection))
+            Program.dyn.Add("Enter amount (0 to cancel): ");
+            if (!decimal.TryParse(Program.dyn.ReadLine(), out menuSelection))
             {
-                Console.WriteLine("Invalid input. Please enter only a number.");
+                Program.dyn.Add("Invalid input. Please enter only a number.");
                 goto start;
             }
             if (menuSelection < 0.00M)
             {
-                Console.WriteLine("Invalid input. Please enter a number greater than 0.");
+                Program.dyn.Add("Invalid input. Please enter a number greater than 0.");
                 goto start;
             }
             if(menuSelection > apiService.GetBalance())
             {
-                Console.WriteLine("Insufficient funds. Please enter an amount within your current balance.");
+                Program.dyn.Add("Insufficient funds. Please enter an amount within your current balance.");
                 goto start;
             }
             return menuSelection;
@@ -193,10 +194,10 @@ namespace TenmoClient
         public int PromptForTransferId()
         {
             int menuSelection;
-            Console.WriteLine("Enter ID of transfer you'd like more details of (0 to cancel): "); 
-            if (!int.TryParse(Console.ReadLine(), out menuSelection))
+            Program.dyn.Add("Enter ID of transfer you'd like more details of (0 to cancel): "); 
+            if (!int.TryParse(Program.dyn.ReadLine(), out menuSelection))
             {
-                Console.WriteLine("Invalid input. Please enter only a number.");
+                Program.dyn.Add("Invalid input. Please enter only a number.");
             }
             return menuSelection;
         }
